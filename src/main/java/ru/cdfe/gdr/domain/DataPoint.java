@@ -1,12 +1,15 @@
 package ru.cdfe.gdr.domain;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class DataPoint {
 	@NotNull
 	@Valid

@@ -1,7 +1,6 @@
 package ru.cdfe.gdr.domain;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;
@@ -9,6 +8,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Curve {
 	@NotBlank
 	private String type;

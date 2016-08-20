@@ -1,6 +1,8 @@
 package ru.cdfe.gdr.domain;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.PersistenceConstructor;
 import ru.cdfe.gdr.validation.Finite;
@@ -8,6 +10,7 @@ import ru.cdfe.gdr.validation.Finite;
 import javax.validation.constraints.NotNull;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Quantity {
 	public static final String NO_DIM = "NO-DIM";
 	

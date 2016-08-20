@@ -1,7 +1,6 @@
 package ru.cdfe.gdr.domain;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import ru.cdfe.gdr.validation.Finite;
@@ -12,6 +11,8 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Approximation {
 	@NotBlank
 	private String description;

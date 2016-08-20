@@ -1,7 +1,6 @@
 package ru.cdfe.gdr.domain;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
@@ -16,6 +15,7 @@ import java.util.List;
 
 @Document
 @Data
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Record {
 	@Id
 	private final ObjectId id = null; // Will be assigned by mongod
