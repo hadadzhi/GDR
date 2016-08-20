@@ -18,4 +18,3 @@ public class MongoGDRApplication {
 		return new DefaultCurieProvider(conf.getCurieName(), new UriTemplate(conf.getCurieUrlTemplate()));
 	}
 }
-
