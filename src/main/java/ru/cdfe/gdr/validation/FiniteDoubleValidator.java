@@ -9,6 +9,6 @@ public class FiniteDoubleValidator implements ConstraintValidator<Finite, Double
 	
 	@Override
 	public boolean isValid(Double value, ConstraintValidatorContext context) {
-		return !value.isInfinite() && !value.isNaN();
+		return value == null || !value.isInfinite() && !value.isNaN();
 	}
 }

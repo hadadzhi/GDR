@@ -9,6 +9,6 @@ public class FiniteFloatValidator implements ConstraintValidator<Finite, Float> 
 	
 	@Override
 	public boolean isValid(Float value, ConstraintValidatorContext context) {
-		return !value.isInfinite() && !value.isNaN();
+		return value == null || !value.isInfinite() && !value.isNaN();
 	}
 }

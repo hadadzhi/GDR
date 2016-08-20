@@ -8,7 +8,6 @@ import ru.cdfe.gdr.web.controllers.RecordsController;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -27,7 +26,7 @@ public class RecordResource extends ResourceSupport {
 	private final Reaction reaction;
 
 	private final List<DataPoint> sourceData;
-	private final List<ApproximationProjection> approximations;
+	private final List<Approximation> approximations;
 
 	public RecordResource(Record record) {
 		this.exforSubEntNumber = record.getExforSubEntNumber();
@@ -39,7 +38,7 @@ public class RecordResource extends ResourceSupport {
 		this.reaction = record.getReaction();
 
 		this.sourceData = record.getSourceData();
-		this.approximations = record.getApproximations().stream().map(ApproximationProjection::new).collect(toList());
+		this.approximations = record.getApproximations();
 
 		add(linkTo(methodOn(RecordsController.class).getRecord(record.getId())).withSelfRel());
 	}
