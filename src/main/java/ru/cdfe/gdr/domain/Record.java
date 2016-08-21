@@ -5,6 +5,7 @@ import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import ru.cdfe.gdr.validation.ExforSubEntNumber;
 
@@ -38,6 +39,7 @@ public class Record {
 		return Collections.unmodifiableList(approximations);
 	}
 	
+	@Indexed(unique = true)
 	@ExforSubEntNumber
 	private String exforSubEntNumber;
 	
