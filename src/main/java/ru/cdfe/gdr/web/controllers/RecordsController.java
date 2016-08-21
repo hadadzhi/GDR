@@ -14,6 +14,7 @@ import ru.cdfe.gdr.web.exceptions.ConflictException;
 import ru.cdfe.gdr.web.exceptions.NotFoundException;
 import ru.cdfe.gdr.web.representations.RecordResource;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -53,8 +54,9 @@ public class RecordsController {
 	}
 	
 	@RequestMapping(path = "test", method = RequestMethod.POST)
-	public ResponseEntity<Void> testCreate(@RequestBody Record newRecord) {
+	public ResponseEntity<Void> testCreate(@RequestBody @Valid Record newRecord) {
 		repo.findByExforSubEntNumber(newRecord.getExforSubEntNumber()).ifPresent(record -> { throw new ConflictException(); });
+		if (newRecord.getId() != null || newRecord.getVersion() != null) { throw new ConflictException(); }
 		
 		newRecord = repo.save(newRecord);
 		log.info("Saved Record: " + newRecord);

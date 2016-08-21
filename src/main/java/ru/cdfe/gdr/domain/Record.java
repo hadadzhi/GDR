@@ -16,6 +16,8 @@ import java.util.List;
 
 @Document
 @Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Record {
 	@Id
@@ -66,25 +68,4 @@ public class Record {
 	@NotNull
 	@Valid
 	private Quantity energyCenter;
-	
-	@Builder
-	Record(List<DataPoint> sourceData,
-	              List<Approximation> approximations,
-	              String exforSubEntNumber,
-	              Nucleus target,
-	              Nucleus product,
-	              Reaction reaction,
-	              Quantity integratedCrossSection,
-	              Quantity firstMoment,
-	              Quantity energyCenter) {
-		this.sourceData = sourceData;
-		this.approximations = approximations;
-		this.exforSubEntNumber = exforSubEntNumber;
-		this.target = target;
-		this.product = product;
-		this.reaction = reaction;
-		this.integratedCrossSection = integratedCrossSection;
-		this.firstMoment = firstMoment;
-		this.energyCenter = energyCenter;
-	}
 }

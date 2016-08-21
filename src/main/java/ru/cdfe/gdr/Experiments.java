@@ -156,10 +156,10 @@ class Experiments implements ApplicationRunner {
 		r = mongo.findById(r.getId(), RecordEx.class);
 		log.info("Modified record: " + r);
 		
-		log.info("# of Records: " + mongo.findAll(RecordEx.class).size());
+		log.info("# of records: " + mongo.findAll(RecordEx.class).size());
 		log.info("Deleting record: " + r);
 		mongo.remove(r);
-		log.info("# of Records: " + mongo.findAll(RecordEx.class).size());
+		log.info("# of records: " + mongo.findAll(RecordEx.class).size());
 	}
 	
 	private void useRepo() {
@@ -171,15 +171,14 @@ class Experiments implements ApplicationRunner {
 			.exfor("abcdefgh")
 			.description("repo sample data")
 			.build();
-		log.info("Created RecordEx: " + r);
+		log.info("Created record: " + r);
 		
 		r = repo.save(r);
-		log.info("Saved RecordEx: " + r);
+		log.info("Saved record: " + r);
 		
 		r = repo.findOne(r.getId());
-		log.info("Found RecordEx: " + r);
+		log.info("Found record: " + r);
 		
-		log.info("Modifying by deleting the old record an replacing with a new one");
 		repo.delete(r);
 		r = repo.save(RecordEx.builder().description("modified " + r.getDescription()).exfor(r.getExfor()).build());
 		log.info("Modified record: " + r);
@@ -187,9 +186,9 @@ class Experiments implements ApplicationRunner {
 		r = repo.findByExfor(r.getExfor()).orElseThrow(RuntimeException::new);
 		log.info("Found record by exfor: " + r);
 		
-		log.info("# of Records: " + repo.count());
-		log.info("Deleting RecordEx: " + r);
+		log.info("# of records: " + repo.count());
+		log.info("Deleting record: " + r);
 		repo.delete(r);
-		log.info("# of Records: " + repo.count());
+		log.info("# of records: " + repo.count());
 	}
 }
