@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Slf4j
 public class ExceptionHandlers {
 	private static final String LOG_TEMPLATE = "Exception processing request [%s]: ";
+	
 	@ExceptionHandler(OptimisticLockingFailureException.class)
 	@ResponseStatus(HttpStatus.CONFLICT)
 	public void optimisticLockingFailure(OptimisticLockingFailureException e) {
