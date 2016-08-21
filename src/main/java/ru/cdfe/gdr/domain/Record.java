@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Record {
 	@Id
-	private final ObjectId id = null; // Will be assigned by mongod
+	private ObjectId id;
 	
 	@Version
 	private Long version;
