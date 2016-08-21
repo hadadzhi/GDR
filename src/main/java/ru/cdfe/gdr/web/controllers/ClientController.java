@@ -6,28 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Resources;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.cdfe.gdr.domain.Record;
 import ru.cdfe.gdr.repositories.RecordsRepository;
-import ru.cdfe.gdr.web.exceptions.ConflictException;
 import ru.cdfe.gdr.web.exceptions.NotFoundException;
 import ru.cdfe.gdr.web.representations.RecordResource;
 
-import javax.validation.Valid;
 import java.util.Optional;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("records")
 @Slf4j
-public class RecordsController {
+public class ClientController {
 	private final RecordsRepository repo;
 	
 	@Autowired
-	public RecordsController(RecordsRepository repo) {
+	public ClientController(RecordsRepository repo) {
 		this.repo = repo;
 	}
 	
@@ -47,20 +41,4 @@ public class RecordsController {
 	}
 	
 	// TODO search
-	
-	@RequestMapping(path = "test", method = RequestMethod.GET)
-	public Record testRecord() {
-		return repo.findAll().iterator().next();
-	}
-	
-	@RequestMapping(path = "test", method = RequestMethod.POST)
-	public ResponseEntity<Void> testCreate(@RequestBody @Valid Record newRecord) {
-		repo.findByExforSubEntNumber(newRecord.getExforSubEntNumber()).ifPresent(record -> { throw new ConflictException(); });
-		if (newRecord.getId() != null || newRecord.getVersion() != null) { throw new ConflictException(); }
-		
-		newRecord = repo.save(newRecord);
-		log.info("Saved Record: " + newRecord);
-		
-		return ResponseEntity.created(linkTo(methodOn(RecordsController.class).getRecord(newRecord.getId())).toUri()).build();
-	}
 }

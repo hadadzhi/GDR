@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 import ru.cdfe.gdr.domain.*;
-import ru.cdfe.gdr.web.controllers.RecordsController;
+import ru.cdfe.gdr.web.controllers.ClientController;
 
 import java.util.List;
 
@@ -40,6 +40,6 @@ public class RecordResource extends ResourceSupport {
 		this.sourceData = record.getSourceData();
 		this.approximations = record.getApproximations();
 
-		add(linkTo(methodOn(RecordsController.class).getRecord(record.getId())).withSelfRel());
+		add(linkTo(methodOn(ClientController.class).getRecord(record.getId())).withSelfRel());
 	}
 }
