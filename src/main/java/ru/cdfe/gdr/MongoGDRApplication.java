@@ -38,7 +38,7 @@ public class MongoGDRApplication {
 	@Profile(PROFILE_OPERATOR)
 	public EmbeddedServletContainerCustomizer embeddedServletContainerCustomizer() {
 		return container -> {
-			container.setPort(9090);
+			container.setPort(8888);
 			container.setAddress(InetAddress.getLoopbackAddress());
 		};
 	}
@@ -46,53 +46,56 @@ public class MongoGDRApplication {
 	@Bean
 	@Profile(PROFILE_OPERATOR)
 	public ApplicationRunner createTestData(RecordsRepository repo) {
-		return args -> IntStream.range(0, 1000).parallel().forEach(value -> {
-			Random rnd = new Random();
-			
-			List<DataPoint> source = new ArrayList<>();
-			IntStream.range(0, 10).forEach(i -> source.add(
-				new DataPoint(
-					new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"),
-					new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))));
-			
-			List<Approximation> approximations = new ArrayList<>();
-			IntStream.range(0, 2).forEach(i -> {
-				List<Curve> curves = new ArrayList<>();
-				IntStream.range(0, 2).forEach(j -> {
-					Curve curve = Curve.builder()
-						.type(j % 2 == 0 ? "Gaussian" : "Lorentzian")
-						.energyAtMaxCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
-						.fullWidthAtHalfMaximum(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
-						.maxCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
+		return args -> {
+			repo.deleteAll();
+			IntStream.range(0, 1000).parallel().forEach(value -> {
+				Random rnd = new Random();
+				
+				List<DataPoint> source = new ArrayList<>();
+				IntStream.range(0, 10).forEach(i -> source.add(
+					new DataPoint(
+						new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"),
+						new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))));
+				
+				List<Approximation> approximations = new ArrayList<>();
+				IntStream.range(0, 2).forEach(i -> {
+					List<Curve> curves = new ArrayList<>();
+					IntStream.range(0, 2).forEach(j -> {
+						Curve curve = Curve.builder()
+							.type(j % 2 == 0 ? "Gaussian" : "Lorentzian")
+							.energyAtMaxCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
+							.fullWidthAtHalfMaximum(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
+							.maxCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
+							.build();
+						
+						curves.add(curve);
+					});
+					
+					Approximation approximation = Approximation.builder()
+						.chiSquaredUnweighted(rnd.nextDouble() * 100)
+						.chiSquaredWeighted(rnd.nextDouble() * 100)
+						.description("Sample data " + rnd.nextInt())
+						.sourceData(source.stream().limit(source.size() / 2).collect(toList()))
+						.curves(curves)
 						.build();
 					
-					curves.add(curve);
+					approximations.add(approximation);
 				});
 				
-				Approximation approximation = Approximation.builder()
-					.chiSquaredUnweighted(rnd.nextDouble() * 100)
-					.chiSquaredWeighted(rnd.nextDouble() * 100)
-					.description("Sample data " + rnd.nextInt())
-					.sourceData(source.stream().limit(source.size() / 2).collect(toList()))
-					.curves(curves)
+				Record record = Record.builder()
+					.exforSubEntNumber(UUID.randomUUID().toString().replace("\\-", "").substring(0, 8))
+					.energyCenter(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
+					.firstMoment(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
+					.integratedCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV*mb"))
+					.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "ZZ"))
+					.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "ZZ"))
+					.reaction(new Reaction("A", "B"))
+					.sourceData(source)
+					.approximations(approximations)
 					.build();
 				
-				approximations.add(approximation);
+				repo.save(record);
 			});
-			
-			Record record = Record.builder()
-				.exforSubEntNumber(UUID.randomUUID().toString().replace("\\-", "").substring(0, 8))
-				.energyCenter(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
-				.firstMoment(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
-				.integratedCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV*mb"))
-				.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "ZZ"))
-				.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "ZZ"))
-				.reaction(new Reaction("A", "B"))
-				.sourceData(source)
-				.approximations(approximations)
-				.build();
-			
-			repo.save(record);
-		});
+		};
 	}
 }
