@@ -53,7 +53,7 @@ public class RecordsOperatorController {
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@RequestParam String id) {
+	public void delete(@RequestParam(Parameters.ID) String id) {
 		if (!repo.exists(id)) {
 			throw new RecordNotFoundException();
 		}
@@ -61,8 +61,14 @@ public class RecordsOperatorController {
 		repo.delete(id);
 	}
 	
-	@RequestMapping(path = Relations.CREATE_RECORD_FROM_EXFOR, method = RequestMethod.GET)
-	public Resource<Record> createRecordFromExfor(@RequestParam(Parameters.SUBENT_NUMBER) String subEntNumber) {
+	@RequestMapping(path = Relations.RECORD, method = RequestMethod.PUT)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void replace(@RequestParam(Parameters.ID) String id, @RequestBody Resource<Record> request) {
+		// TODO replace record
+	}
+	
+	@RequestMapping(path = Relations.CREATE_RECORD, method = RequestMethod.POST)
+	public Resource<Record> createRecord(@RequestBody Resource<Record> request) {
 		return null; // TODO create record from exfor
 	}
 	

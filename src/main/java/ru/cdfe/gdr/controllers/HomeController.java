@@ -29,32 +29,22 @@ public class HomeController {
 	public ResourceSupport home() {
 		final ResourceSupport home = new ResourceSupport();
 		
-		// Self
 		home.add(linkTo(methodOn(HomeController.class).home()).withSelfRel());
 		
-		// All records
 		home.add(new Link(
 			new UriTemplate(linkTo(methodOn(RecordsController.class).findAll(null, null)).toUriComponentsBuilder().toUriString())
-				.with("page", REQUEST_PARAM).with("size", REQUEST_PARAM).with("sort", REQUEST_PARAM),
+				.with(Parameters.PAGE, REQUEST_PARAM).with(Parameters.SIZE, REQUEST_PARAM).with(Parameters.SORT, REQUEST_PARAM),
 			Relations.RECORD_COLLECTION
 		));
 		
-		// One record
 		home.add(new Link(
-			new UriTemplate(
-				linkTo(methodOn(RecordsController.class).findOne(null, null)).toUriComponentsBuilder().replaceQuery(null).toUriString()
-			).with(Parameters.ID, REQUEST_PARAM).with(Parameters.SUBENT_NUMBER, REQUEST_PARAM),
+			new UriTemplate(linkTo(methodOn(RecordsController.class).findOne(null, null)).toUriComponentsBuilder().toUriString())
+				.with(Parameters.ID, REQUEST_PARAM).with(Parameters.SUBENT_NUMBER, REQUEST_PARAM),
 			Relations.RECORD
 		));
 		
-		// TODO Operator links
 		if (operatorController.isPresent()) {
-			home.add(new Link(
-				new UriTemplate(
-					linkTo(methodOn(RecordsOperatorController.class).createRecordFromExfor("")).toUriComponentsBuilder().replaceQuery(null).toUriString()
-				).with(Parameters.SUBENT_NUMBER, REQUEST_PARAM),
-				Relations.CREATE_RECORD_FROM_EXFOR
-			));
+			home.add(linkTo(methodOn(RecordsOperatorController.class).createRecord(null)).withRel(Relations.CREATE_RECORD));
 			home.add(linkTo(methodOn(RecordsOperatorController.class).createApproximation(null)).withRel(Relations.CREATE_APPROXIMATION));
 		}
 		

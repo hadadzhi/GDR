@@ -36,21 +36,24 @@ public class RecordsController {
 	public PagedResources<Resource<Record>> findAll(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
 		return assembler.toResource(
 			repo.findAll(pageable),
-			record -> new Resource<>(record, linkTo(methodOn(RecordsController.class).findAll(null, null)).withRel(Relations.RECORD_COLLECTION))
+			record -> new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(record.getId(), null)).withSelfRel())
 		);
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.GET)
 	public Resource<Record> findOne(@RequestParam(required = false, name = Parameters.ID) String id,
 	                                @RequestParam(required = false, name = Parameters.SUBENT_NUMBER) String subEntNumber) {
+		
 		if (id != null) {
 			final Record record = Optional.ofNullable(repo.findOne(id)).orElseThrow(RecordNotFoundException::new);
 			return new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(record.getId(), null)).withSelfRel());
-		} else if (subEntNumber != null) {
+		}
+		
+		if (subEntNumber != null) {
 			final Record record = Optional.ofNullable(repo.findByExforSubEntNumber(subEntNumber)).orElseThrow(RecordNotFoundException::new);
 			return new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(null, record.getExforSubEntNumber())).withSelfRel());
-		} else {
-			throw new BadRequestException("Must specify either " + Parameters.ID + " or " + Parameters.SUBENT_NUMBER);
 		}
+		
+		throw new BadRequestException("Must specify either " + Parameters.ID + " or " + Parameters.SUBENT_NUMBER);
 	}
 }
