@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.web.bind.annotation.*;
-import ru.cdfe.gdr.controllers.exceptions.RecordNotFoundException;
+import ru.cdfe.gdr.exceptions.RecordNotFoundException;
 import ru.cdfe.gdr.domain.Record;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 import ru.cdfe.gdr.representations.RecordResource;

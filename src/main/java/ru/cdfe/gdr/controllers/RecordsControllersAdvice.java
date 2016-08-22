@@ -6,13 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.cdfe.gdr.controllers.exceptions.RecordNotFoundException;
+import ru.cdfe.gdr.exceptions.RecordNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
-@RestControllerAdvice
+@RestControllerAdvice(assignableTypes = { RecordsController.class, RecordsOperatorController.class })
 @Slf4j
-public class ExceptionHandlers {
+public class RecordsControllersAdvice {
 	private static final String logTemplate = "Request: [%s], Exception: [%s]";
 	
 	private static String parseRequest(HttpServletRequest request) {
@@ -40,6 +40,6 @@ public class ExceptionHandlers {
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public void handleNotFound(RecordNotFoundException e, HttpServletRequest request) {
-		log.info(String.format(logTemplate, parseRequest(request), e.toString()));
+		log.trace(String.format(logTemplate, parseRequest(request), e.toString()));
 	}
 }

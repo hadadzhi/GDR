@@ -62,7 +62,7 @@ public class MongoGDRApplication {
 	public ApplicationRunner createTestData(RecordsRepository repo) {
 		return args -> {
 			repo.deleteAll();
-			IntStream.range(0, 1000).parallel().forEach(value -> {
+			IntStream.range(0, 100).parallel().forEach(value -> {
 				Random rnd = new Random();
 				
 				List<DataPoint> source = new ArrayList<>();

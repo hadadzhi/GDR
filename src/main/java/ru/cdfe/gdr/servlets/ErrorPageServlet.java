@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 @WebServlet("/error")
 @Slf4j
 public class ErrorPageServlet extends HttpServlet {
-	private static final String logTemplate = "Error id: [%s], Request: [%s %s], Exception: [%s]";
+	private static final String logTemplate = "Request: [%s %s], Exception: [%s]";
 	
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -49,7 +49,7 @@ public class ErrorPageServlet extends HttpServlet {
 			
 			errorResource = new ErrorResource("Internal server error");
 			
-			log.error(String.format(logTemplate, errorResource.getErrorId(), method, uri, uncaughtException));
+			log.error(String.format(logTemplate, method, uri, uncaughtException));
 		}
 		
 		return errorResource;
