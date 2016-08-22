@@ -3,7 +3,10 @@ package ru.cdfe.gdr;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.web.servlet.ErrorPage;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.UriTemplate;
@@ -23,7 +26,8 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
+@ServletComponentScan
 public class MongoGDRApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MongoGDRApplication.class, args);
@@ -40,8 +44,13 @@ public class MongoGDRApplication {
 	}
 	
 	@Bean
+	public EmbeddedServletContainerCustomizer errorPageCustomizer() {
+		return container -> container.addErrorPages(new ErrorPage("/error"));
+	}
+	
+	@Bean
 	@Profile(Constants.PROFILE_OPERATOR)
-	public EmbeddedServletContainerCustomizer embeddedServletContainerCustomizer() {
+	public EmbeddedServletContainerCustomizer operatorPortAndAddressCustomizer() {
 		return container -> {
 			container.setPort(8888);
 			container.setAddress(InetAddress.getLoopbackAddress());

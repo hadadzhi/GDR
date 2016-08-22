@@ -10,6 +10,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class RecordResource extends Resource<Record> {
 	public RecordResource(Record record) {
 		super(record);
-		add(linkTo(methodOn(RecordsController.class).getRecord(record.getId())).withSelfRel());
+		add(linkTo(methodOn(RecordsController.class).findOne(record.getId())).withSelfRel());
 	}
 }

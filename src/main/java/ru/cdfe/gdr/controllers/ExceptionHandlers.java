@@ -1,25 +1,45 @@
 package ru.cdfe.gdr.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.cdfe.gdr.controllers.exceptions.RecordNotFoundException;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 @Slf4j
 public class ExceptionHandlers {
-	private static final String LOG_TEMPLATE = "Exception processing request [%s]: ";
+	private static final String logTemplate = "Request: [%s], Exception: [%s]";
 	
-	@ExceptionHandler(OptimisticLockingFailureException.class)
-	@ResponseStatus(HttpStatus.CONFLICT)
-	public void optimisticLockingFailure(OptimisticLockingFailureException e) {
-		log.warn(String.format(LOG_TEMPLATE, currentUri()), e);
+	private static String parseRequest(HttpServletRequest request) {
+		final String method = request.getMethod();
+		final String path = request.getRequestURI();
+		final String query = request.getQueryString();
+		
+		final StringBuilder builder = new StringBuilder();
+		
+		builder.append(method).append(' ').append(path);
+		
+		if (query != null) {
+			builder.append('?').append(query);
+		}
+		
+		return builder.toString();
 	}
 	
-	private static String currentUri() {
-		return ServletUriComponentsBuilder.fromCurrentRequest().build().toString();
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.CONFLICT)
+	public void handleDuplicateKey(DuplicateKeyException e, HttpServletRequest request) {
+		log.warn(String.format(logTemplate, parseRequest(request), e.toString()));
+	}
+	
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public void handleNotFound(RecordNotFoundException e, HttpServletRequest request) {
+		log.info(String.format(logTemplate, parseRequest(request), e.toString()));
 	}
 }
