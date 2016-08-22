@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.cdfe.gdr.exceptions.BadRequestException;
+import ru.cdfe.gdr.exceptions.InvalidRecordException;
 import ru.cdfe.gdr.exceptions.RecordNotFoundException;
 import ru.cdfe.gdr.representations.ErrorResource;
 
@@ -47,7 +47,7 @@ public class ExceptionHandlerControllerAdvice {
 	}
 	
 	@ExceptionHandler
-	public ResponseEntity<ErrorResource> handleBadRequest(BadRequestException e, HttpServletRequest request) {
+	public ResponseEntity<ErrorResource> handleBadRequest(InvalidRecordException e, HttpServletRequest request) {
 		log.trace(String.format(logTemplate, parseRequest(request), e.toString()));
 		return ResponseEntity.badRequest().body(new ErrorResource(e.getMessage()));
 	}

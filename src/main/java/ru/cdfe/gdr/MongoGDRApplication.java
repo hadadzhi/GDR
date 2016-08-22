@@ -100,7 +100,8 @@ public class MongoGDRApplication {
 				});
 				
 				final Record record = Record.builder()
-					.exforSubEntNumber(UUID.randomUUID().toString().replace("\\-", "").substring(0, 8))
+					.id(rnd.nextDouble() < 0.1 ? null : // Small percentage of records will not have a corresponding exfor subent
+						UUID.randomUUID().toString().replace("\\-", "").substring(0, 8))
 					.energyCenter(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
 					.firstMoment(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
 					.integratedCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV*mb"))

@@ -18,10 +18,10 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class HomeController {
-	private final Optional<RecordsOperatorController> operatorController;
+	private final Optional<OperatorController> operatorController;
 	
 	@Autowired
-	public HomeController(Optional<RecordsOperatorController> operatorController) {
+	public HomeController(Optional<OperatorController> operatorController) {
 		this.operatorController = operatorController;
 	}
 	
@@ -38,14 +38,13 @@ public class HomeController {
 		));
 		
 		home.add(new Link(
-			new UriTemplate(linkTo(methodOn(RecordsController.class).findOne(null, null)).toUriComponentsBuilder().toUriString())
-				.with(Parameters.ID, REQUEST_PARAM).with(Parameters.SUBENT_NUMBER, REQUEST_PARAM),
+			new UriTemplate(linkTo(methodOn(RecordsController.class).findOne("")).toUriComponentsBuilder().replaceQuery(null).toUriString())
+				.with(Parameters.ID, REQUEST_PARAM),
 			Relations.RECORD
 		));
 		
 		if (operatorController.isPresent()) {
-			home.add(linkTo(methodOn(RecordsOperatorController.class).createRecord(null)).withRel(Relations.CREATE_RECORD));
-			home.add(linkTo(methodOn(RecordsOperatorController.class).createApproximation(null)).withRel(Relations.CREATE_APPROXIMATION));
+			home.add(linkTo(methodOn(OperatorController.class).createRecord(null)).withRel(Relations.CREATE_RECORD));
 		}
 		
 		return home;

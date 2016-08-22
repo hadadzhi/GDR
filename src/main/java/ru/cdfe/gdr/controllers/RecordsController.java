@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.cdfe.gdr.constants.Parameters;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Record;
-import ru.cdfe.gdr.exceptions.BadRequestException;
 import ru.cdfe.gdr.exceptions.RecordNotFoundException;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 
@@ -36,24 +35,13 @@ public class RecordsController {
 	public PagedResources<Resource<Record>> findAll(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
 		return assembler.toResource(
 			repo.findAll(pageable),
-			record -> new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(record.getId(), null)).withSelfRel())
+			record -> new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(record.getId())).withSelfRel())
 		);
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.GET)
-	public Resource<Record> findOne(@RequestParam(required = false, name = Parameters.ID) String id,
-	                                @RequestParam(required = false, name = Parameters.SUBENT_NUMBER) String subEntNumber) {
-		
-		if (id != null) {
-			final Record record = Optional.ofNullable(repo.findOne(id)).orElseThrow(RecordNotFoundException::new);
-			return new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(record.getId(), null)).withSelfRel());
-		}
-		
-		if (subEntNumber != null) {
-			final Record record = Optional.ofNullable(repo.findByExforSubEntNumber(subEntNumber)).orElseThrow(RecordNotFoundException::new);
-			return new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(null, record.getExforSubEntNumber())).withSelfRel());
-		}
-		
-		throw new BadRequestException("Must specify either " + Parameters.ID + " or " + Parameters.SUBENT_NUMBER);
+	public Resource<Record> findOne(@RequestParam(Parameters.ID) String id) {
+		final Record record = Optional.ofNullable(repo.findOne(id)).orElseThrow(RecordNotFoundException::new);
+		return new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(record.getId())).withSelfRel());
 	}
 }

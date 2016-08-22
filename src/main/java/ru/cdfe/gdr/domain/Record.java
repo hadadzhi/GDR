@@ -5,10 +5,8 @@ import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.core.Relation;
-import ru.cdfe.gdr.validation.ExforSubEntNumber;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -26,7 +24,6 @@ import static ru.cdfe.gdr.constants.Relations.RECORD_COLLECTION;
 @Relation(value = RECORD, collectionRelation = RECORD_COLLECTION)
 public class Record {
 	@Id
-	@JsonIgnore
 	private String id;
 	
 	@Version
@@ -55,10 +52,6 @@ public class Record {
 			return null;
 		}
 	}
-	
-	@Indexed(unique = true)
-	@ExforSubEntNumber
-	private String exforSubEntNumber;
 	
 	@NotNull
 	@Valid
