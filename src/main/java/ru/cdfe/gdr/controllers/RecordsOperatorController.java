@@ -4,24 +4,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.Resource;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.cdfe.gdr.constants.Parameters;
+import ru.cdfe.gdr.constants.Profiles;
+import ru.cdfe.gdr.constants.Relations;
+import ru.cdfe.gdr.domain.Approximation;
 import ru.cdfe.gdr.domain.Record;
+import ru.cdfe.gdr.exceptions.BadRequestException;
+import ru.cdfe.gdr.exceptions.RecordNotFoundException;
 import ru.cdfe.gdr.repositories.RecordsRepository;
-import ru.cdfe.gdr.representations.ErrorResource;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
-import static ru.cdfe.gdr.Constants.PROFILE_OPERATOR;
-import static ru.cdfe.gdr.Constants.RELATION_RECORD_COLLECTION;
 
-@Profile(PROFILE_OPERATOR)
-@RestController
-@RequestMapping(RELATION_RECORD_COLLECTION)
 @Slf4j
+@RestController
+@Profile(Profiles.OPERATOR)
 public class RecordsOperatorController {
 	private final RecordsRepository repo;
 	private final Validator validator;
@@ -32,31 +34,40 @@ public class RecordsOperatorController {
 		this.validator = validator;
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> save(@RequestBody Resource<Record> requestEntity) {
+	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void save(@RequestBody Resource<Record> requestEntity) {
 		final Record record = requestEntity.getContent();
 		final Set<ConstraintViolation<Record>> constraintViolations = validator.validate(record);
 		
 		if (!constraintViolations.isEmpty()) {
-			return ResponseEntity.badRequest().body(new ErrorResource(
+			throw new BadRequestException(
 				constraintViolations.stream()
 					.map(v -> v.getPropertyPath() + " " + v.getMessage())
 					.collect(joining(", "))
-			));
+			);
 		}
 		
 		repo.save(record);
-		
-		return ResponseEntity.noContent().build();
 	}
 	
-	@RequestMapping(path = "{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> delete(@PathVariable String id) {
-		if (repo.exists(id)) {
-			repo.delete(id);
-			return ResponseEntity.noContent().build();
-		} else {
-			return ResponseEntity.notFound().build();
+	@RequestMapping(path = Relations.RECORD, method = RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@RequestParam String id) {
+		if (!repo.exists(id)) {
+			throw new RecordNotFoundException();
 		}
+		
+		repo.delete(id);
+	}
+	
+	@RequestMapping(path = Relations.CREATE_RECORD_FROM_EXFOR, method = RequestMethod.GET)
+	public Resource<Record> createRecordFromExfor(@RequestParam(Parameters.SUBENT_NUMBER) String subEntNumber) {
+		return null; // TODO create record from exfor
+	}
+	
+	@RequestMapping(path = Relations.CREATE_APPROXIMATION, method = RequestMethod.POST)
+	public Resource<Approximation> createApproximation(@RequestBody Resource<Approximation> request) {
+		return null; // TODO create approximation
 	}
 }

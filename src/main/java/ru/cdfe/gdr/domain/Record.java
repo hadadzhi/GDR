@@ -15,15 +15,15 @@ import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-import static ru.cdfe.gdr.Constants.RELATION_RECORD;
-import static ru.cdfe.gdr.Constants.RELATION_RECORD_COLLECTION;
+import static ru.cdfe.gdr.constants.Relations.RECORD;
+import static ru.cdfe.gdr.constants.Relations.RECORD_COLLECTION;
 
 @Document
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@Relation(value = RELATION_RECORD, collectionRelation = RELATION_RECORD_COLLECTION)
+@Relation(value = RECORD, collectionRelation = RECORD_COLLECTION)
 public class Record {
 	@Id
 	@JsonIgnore

@@ -5,19 +5,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.web.bind.annotation.*;
-import ru.cdfe.gdr.exceptions.RecordNotFoundException;
+import org.springframework.hateoas.Resource;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.cdfe.gdr.constants.Parameters;
+import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Record;
+import ru.cdfe.gdr.exceptions.BadRequestException;
+import ru.cdfe.gdr.exceptions.RecordNotFoundException;
 import ru.cdfe.gdr.repositories.RecordsRepository;
-import ru.cdfe.gdr.representations.RecordResource;
 
 import java.util.Optional;
 
-import static ru.cdfe.gdr.Constants.RELATION_RECORD_COLLECTION;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-@RestController
-@RequestMapping(RELATION_RECORD_COLLECTION)
 @Slf4j
+@RestController
 public class RecordsController {
 	private final RecordsRepository repo;
 	
@@ -26,18 +32,25 @@ public class RecordsController {
 		this.repo = repo;
 	}
 	
-	@RequestMapping(method = RequestMethod.GET)
-	public PagedResources<RecordResource> findAll(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
-		return assembler.toResource(repo.findAll(pageable), RecordResource::new);
+	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.GET)
+	public PagedResources<Resource<Record>> findAll(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
+		return assembler.toResource(
+			repo.findAll(pageable),
+			record -> new Resource<>(record, linkTo(methodOn(RecordsController.class).findAll(null, null)).withRel(Relations.RECORD_COLLECTION))
+		);
 	}
 	
-	@RequestMapping(path = "{id}", method = RequestMethod.GET)
-	public RecordResource findOne(@PathVariable String id) {
-		return new RecordResource(Optional.ofNullable(repo.findOne(id)).orElseThrow(RecordNotFoundException::new));
-	}
-	
-	@RequestMapping(path = "findByExfor", method = RequestMethod.GET)
-	public RecordResource findByExfor(@RequestParam String subEntNumber) {
-		return new RecordResource(repo.findByExfor(subEntNumber).orElseThrow(RecordNotFoundException::new));
+	@RequestMapping(path = Relations.RECORD, method = RequestMethod.GET)
+	public Resource<Record> findOne(@RequestParam(required = false, name = Parameters.ID) String id,
+	                                @RequestParam(required = false, name = Parameters.SUBENT_NUMBER) String subEntNumber) {
+		if (id != null) {
+			final Record record = Optional.ofNullable(repo.findOne(id)).orElseThrow(RecordNotFoundException::new);
+			return new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(record.getId(), null)).withSelfRel());
+		} else if (subEntNumber != null) {
+			final Record record = Optional.ofNullable(repo.findByExforSubEntNumber(subEntNumber)).orElseThrow(RecordNotFoundException::new);
+			return new Resource<>(record, linkTo(methodOn(RecordsController.class).findOne(null, record.getExforSubEntNumber())).withSelfRel());
+		} else {
+			throw new BadRequestException("Must specify either " + Parameters.ID + " or " + Parameters.SUBENT_NUMBER);
+		}
 	}
 }

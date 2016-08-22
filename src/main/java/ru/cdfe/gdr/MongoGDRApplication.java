@@ -13,6 +13,7 @@ import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import ru.cdfe.gdr.constants.Profiles;
 import ru.cdfe.gdr.domain.*;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 
@@ -49,7 +50,7 @@ public class MongoGDRApplication {
 	}
 	
 	@Bean
-	@Profile(Constants.PROFILE_OPERATOR)
+	@Profile(Profiles.OPERATOR)
 	public EmbeddedServletContainerCustomizer operatorPortAndAddressCustomizer() {
 		return container -> {
 			container.setPort(8888);
@@ -58,22 +59,24 @@ public class MongoGDRApplication {
 	}
 	
 	@Bean
-	@Profile(Constants.PROFILE_OPERATOR)
+	@Profile(Profiles.DATABASE_INIT)
 	public ApplicationRunner createTestData(RecordsRepository repo) {
 		return args -> {
 			repo.deleteAll();
 			IntStream.range(0, 100).parallel().forEach(value -> {
-				Random rnd = new Random();
+				final Random rnd = new Random();
+				final List<DataPoint> source = new ArrayList<>();
 				
-				List<DataPoint> source = new ArrayList<>();
 				IntStream.range(0, 10).forEach(i -> source.add(
 					new DataPoint(
 						new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"),
 						new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))));
 				
-				List<Approximation> approximations = new ArrayList<>();
+				final List<Approximation> approximations = new ArrayList<>();
+				
 				IntStream.range(0, 2).forEach(i -> {
-					List<Curve> curves = new ArrayList<>();
+					final List<Curve> curves = new ArrayList<>();
+					
 					IntStream.range(0, 2).forEach(j -> {
 						Curve curve = Curve.builder()
 							.type(j % 2 == 0 ? "Gaussian" : "Lorentzian")
@@ -85,7 +88,7 @@ public class MongoGDRApplication {
 						curves.add(curve);
 					});
 					
-					Approximation approximation = Approximation.builder()
+					final Approximation approximation = Approximation.builder()
 						.chiSquaredUnweighted(rnd.nextDouble() * 100)
 						.chiSquaredWeighted(rnd.nextDouble() * 100)
 						.description("Sample data " + rnd.nextInt())
@@ -96,7 +99,7 @@ public class MongoGDRApplication {
 					approximations.add(approximation);
 				});
 				
-				Record record = Record.builder()
+				final Record record = Record.builder()
 					.exforSubEntNumber(UUID.randomUUID().toString().replace("\\-", "").substring(0, 8))
 					.energyCenter(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
 					.firstMoment(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))

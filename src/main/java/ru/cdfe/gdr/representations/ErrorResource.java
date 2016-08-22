@@ -1,10 +1,10 @@
 package ru.cdfe.gdr.representations;
 
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.Instant;
 
-@Data
+@Getter
 public final class ErrorResource {
 	private final String message;
 	private final Long timestamp;
