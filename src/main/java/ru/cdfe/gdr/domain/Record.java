@@ -1,12 +1,13 @@
 package ru.cdfe.gdr.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.hateoas.core.Relation;
 import ru.cdfe.gdr.validation.ExforSubEntNumber;
 
 import javax.validation.Valid;
@@ -14,16 +15,22 @@ import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+import static ru.cdfe.gdr.Constants.RELATION_RECORD;
+import static ru.cdfe.gdr.Constants.RELATION_RECORD_COLLECTION;
+
 @Document
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Relation(value = RELATION_RECORD, collectionRelation = RELATION_RECORD_COLLECTION)
 public class Record {
 	@Id
-	private ObjectId id;
+	@JsonIgnore
+	private String id;
 	
 	@Version
+	@JsonIgnore
 	private Long version;
 	
 	@Valid

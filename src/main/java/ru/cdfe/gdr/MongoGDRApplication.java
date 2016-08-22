@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import ru.cdfe.gdr.domain.*;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 
+import javax.validation.Validator;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +25,6 @@ import static java.util.stream.Collectors.toList;
 
 @SpringBootApplication
 public class MongoGDRApplication {
-	public static final String PROFILE_OPERATOR = "operator";
-	
 	public static void main(String[] args) {
 		SpringApplication.run(MongoGDRApplication.class, args);
 	}
@@ -35,7 +35,12 @@ public class MongoGDRApplication {
 	}
 	
 	@Bean
-	@Profile(PROFILE_OPERATOR)
+	public Validator validator() {
+		return new LocalValidatorFactoryBean();
+	}
+	
+	@Bean
+	@Profile(Constants.PROFILE_OPERATOR)
 	public EmbeddedServletContainerCustomizer embeddedServletContainerCustomizer() {
 		return container -> {
 			container.setPort(8888);
@@ -44,7 +49,7 @@ public class MongoGDRApplication {
 	}
 	
 	@Bean
-	@Profile(PROFILE_OPERATOR)
+	@Profile(Constants.PROFILE_OPERATOR)
 	public ApplicationRunner createTestData(RecordsRepository repo) {
 		return args -> {
 			repo.deleteAll();

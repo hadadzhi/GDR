@@ -1,4 +1,4 @@
-package ru.cdfe.gdr.web;
+package ru.cdfe.gdr;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
