@@ -17,7 +17,9 @@ import static ru.cdfe.gdr.constants.Relations.RECORD;
 import static ru.cdfe.gdr.constants.Relations.RECORD_COLLECTION;
 
 @Document
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)

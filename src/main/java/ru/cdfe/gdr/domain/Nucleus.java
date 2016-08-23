@@ -3,7 +3,6 @@ package ru.cdfe.gdr.domain;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -28,7 +27,6 @@ public class Nucleus {
 		this(charge, mass, NO_SYMBOL);
 	}
 	
-	@PersistenceConstructor
 	public Nucleus(Integer charge, Integer mass, String symbol) {
 		this.charge = charge;
 		this.mass = mass;

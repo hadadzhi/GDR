@@ -1,5 +1,8 @@
 package ru.cdfe.gdr;
 
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ReadConcern;
+import com.mongodb.WriteConcern;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -51,6 +54,14 @@ public class MongoGDRApplication {
 	}
 	
 	@Bean
+	public MongoClientOptions mongoClientOptions() {
+		return MongoClientOptions.builder()
+			.writeConcern(WriteConcern.MAJORITY)
+			.readConcern(ReadConcern.LOCAL)
+			.build();
+	}
+	
+	@Bean
 	public EmbeddedServletContainerCustomizer errorPageCustomizer() {
 		return container -> container.addErrorPages(new ErrorPage("/error"));
 	}
@@ -65,11 +76,11 @@ public class MongoGDRApplication {
 	}
 	
 	@Bean
-	@Profile(Profiles.DATABASE_INIT)
+	@Profile(Profiles.OPERATOR)
 	public ApplicationRunner createTestData(RecordsRepository repo) {
 		return args -> {
 			repo.deleteAll();
-			IntStream.range(0, 100).parallel().forEach(value -> {
+			IntStream.range(0, 1000).parallel().forEach(value -> {
 				final Random rnd = new Random();
 				final List<DataPoint> source = new ArrayList<>();
 				

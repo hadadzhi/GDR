@@ -1,15 +1,14 @@
 package ru.cdfe.gdr.domain;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.data.annotation.PersistenceConstructor;
 import ru.cdfe.gdr.validation.Finite;
 
 import javax.validation.constraints.NotNull;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Quantity {
 	public static final String NO_DIM = "NO-DIM";
@@ -28,7 +27,6 @@ public class Quantity {
 		this(value, error, NO_DIM);
 	}
 	
-	@PersistenceConstructor
 	public Quantity(Double value, Double error, String dimension) {
 		this.value = value;
 		this.error = error;
