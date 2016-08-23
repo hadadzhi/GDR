@@ -25,7 +25,7 @@ public class ErrorPageServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 	}
-
+	
 	private void processError(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setStatus(computeStatus(request));
 		
@@ -58,7 +58,7 @@ public class ErrorPageServlet extends HttpServlet {
 	private Integer computeStatus(HttpServletRequest request) {
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
 		Throwable uncaughtException = (Throwable) request.getAttribute("javax.servlet.error.exception");
-	
+		
 		if (statusCode == null) {
 			if (uncaughtException == null) {
 				statusCode = HttpServletResponse.SC_NOT_FOUND;
@@ -66,7 +66,7 @@ public class ErrorPageServlet extends HttpServlet {
 				statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 			}
 		}
-	
+		
 		return statusCode;
 	}
 }

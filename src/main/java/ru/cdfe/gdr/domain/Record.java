@@ -24,6 +24,7 @@ import static ru.cdfe.gdr.constants.Relations.RECORD_COLLECTION;
 @Relation(value = RECORD, collectionRelation = RECORD_COLLECTION)
 public class Record {
 	@Id
+	@JsonIgnore
 	private String id;
 	
 	@Version
@@ -37,7 +38,7 @@ public class Record {
 		if (sourceData != null) {
 			return Collections.unmodifiableList(sourceData);
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 	
@@ -49,7 +50,7 @@ public class Record {
 		if (approximations != null) {
 			return Collections.unmodifiableList(approximations);
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 	

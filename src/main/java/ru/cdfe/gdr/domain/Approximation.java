@@ -16,7 +16,7 @@ import java.util.List;
 public class Approximation {
 	@NotBlank
 	private String description;
-
+	
 	@Finite // TODO and non-null?
 	private Double chiSquaredWeighted;
 	
@@ -25,11 +25,11 @@ public class Approximation {
 	
 	@Valid
 	private List<DataPoint> sourceData;
-
+	
 	public List<DataPoint> getSourceData() {
 		return Collections.unmodifiableList(sourceData);
 	}
-
+	
 	@NotEmpty
 	@Valid
 	private List<Curve> curves;

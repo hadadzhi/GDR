@@ -5,7 +5,8 @@ import javax.validation.ConstraintValidatorContext;
 
 public class FiniteDoubleValidator implements ConstraintValidator<Finite, Double> {
 	@Override
-	public void initialize(Finite constraintAnnotation) {}
+	public void initialize(Finite constraintAnnotation) {
+	}
 	
 	@Override
 	public boolean isValid(Double value, ConstraintValidatorContext context) {

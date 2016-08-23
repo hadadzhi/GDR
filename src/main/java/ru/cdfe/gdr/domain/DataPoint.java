@@ -18,7 +18,7 @@ public class DataPoint {
 	@NotNull
 	@Valid
 	private Quantity crossSection;
-
+	
 	@PersistenceConstructor
 	public DataPoint(Quantity energy, Quantity crossSection) {
 		this.energy = energy;

@@ -6,6 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * The annotated element's value must not be infinite or NaN. {@code null} elements are considered valid. Accepts {@link Float} and {@link Double}.
+ *
  * @author hadadzhi
  */
 @Documented
@@ -14,6 +15,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = { FiniteDoubleValidator.class, FiniteFloatValidator.class })
 public @interface Finite {
 	String message() default "may not be infinite or NaN";
+	
 	Class<?>[] groups() default {};
+	
 	Class<? extends Payload>[] payload() default {};
 }

@@ -5,7 +5,8 @@ import javax.validation.ConstraintValidatorContext;
 
 public class FiniteFloatValidator implements ConstraintValidator<Finite, Float> {
 	@Override
-	public void initialize(Finite constraintAnnotation) {}
+	public void initialize(Finite constraintAnnotation) {
+	}
 	
 	@Override
 	public boolean isValid(Float value, ConstraintValidatorContext context) {
