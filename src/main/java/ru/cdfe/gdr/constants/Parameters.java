@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Parameters {
-	public static final String ID = "exforSubEntNumber";
+	public static final String ID = "exfor_subent_number";
 	
 	public static final String SIZE = "size";
 	public static final String PAGE = "page";

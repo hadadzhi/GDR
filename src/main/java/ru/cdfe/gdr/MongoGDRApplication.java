@@ -1,7 +1,6 @@
 package ru.cdfe.gdr;
 
 import com.mongodb.MongoClientOptions;
-import com.mongodb.ReadConcern;
 import com.mongodb.WriteConcern;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -56,8 +55,7 @@ public class MongoGDRApplication {
 	@Bean
 	public MongoClientOptions mongoClientOptions() {
 		return MongoClientOptions.builder()
-			.writeConcern(WriteConcern.MAJORITY)
-			.readConcern(ReadConcern.LOCAL)
+			.writeConcern(WriteConcern.JOURNALED)
 			.build();
 	}
 	
@@ -118,7 +116,7 @@ public class MongoGDRApplication {
 				
 				final Record record = Record.builder()
 					.id(rnd.nextDouble() < 0.1 ? null : // Small percentage of records will not have a corresponding exfor subent
-						UUID.randomUUID().toString().replace("\\-", "").substring(0, 8))
+						UUID.randomUUID().toString().replace("\\-", "").substring(0, 8).toUpperCase())
 					.energyCenter(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
 					.firstMoment(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
 					.integratedCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV*mb"))
