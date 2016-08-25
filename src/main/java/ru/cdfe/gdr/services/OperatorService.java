@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.cdfe.gdr.constants.Profiles;
-import ru.cdfe.gdr.domain.Approximation;
 import ru.cdfe.gdr.domain.Record;
 import ru.cdfe.gdr.exceptions.NoSuchRecordException;
 import ru.cdfe.gdr.repositories.RecordsRepository;
@@ -21,15 +20,7 @@ public class OperatorService {
 	public OperatorService(RecordsRepository records) {
 		this.records = records;
 	}
-	
-	public Record createRecordFromExfor(String exforSubEntNumber) {
-		return null; // TODO
-	}
-	
-	public Approximation createApproximationFromSpec(@Valid Approximation spec) {
-		return null; // TODO
-	}
-	
+		
 	public Record insertRecord(@Valid Record record) {
 		return records.save(record);
 	}

@@ -1,6 +1,7 @@
 package ru.cdfe.gdr;
 
 import com.mongodb.MongoClientOptions;
+import com.mongodb.ReadConcern;
 import com.mongodb.WriteConcern;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -55,7 +56,8 @@ public class MongoGDRApplication {
 	@Bean
 	public MongoClientOptions mongoClientOptions() {
 		return MongoClientOptions.builder()
-			.writeConcern(WriteConcern.JOURNALED)
+			.writeConcern(WriteConcern.MAJORITY)
+			.readConcern(ReadConcern.MAJORITY)
 			.build();
 	}
 	
