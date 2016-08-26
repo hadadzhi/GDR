@@ -1,13 +1,13 @@
 package ru.cdfe.gdr.domain;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Nucleus {
 	public static final String NO_SYMBOL = "";

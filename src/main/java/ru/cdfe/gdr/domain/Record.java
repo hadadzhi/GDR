@@ -10,6 +10,7 @@ import org.springframework.hateoas.core.Relation;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class Record {
 	
 	@Version
 	@JsonIgnore
-	private Long version;
+	private BigInteger version;
 	
 	@Valid
 	private List<DataPoint> sourceData;
