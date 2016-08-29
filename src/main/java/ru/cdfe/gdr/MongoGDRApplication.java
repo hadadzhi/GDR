@@ -22,7 +22,6 @@ import ru.cdfe.gdr.domain.*;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 
 import javax.validation.Validator;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -68,19 +67,10 @@ public class MongoGDRApplication {
 	
 	@Bean
 	@Profile(Profiles.OPERATOR)
-	public EmbeddedServletContainerCustomizer operatorPortAndAddressCustomizer() {
-		return container -> {
-			container.setPort(8888);
-			container.setAddress(InetAddress.getLoopbackAddress());
-		};
-	}
-	
-	@Bean
-	@Profile(Profiles.OPERATOR)
 	public ApplicationRunner createTestData(RecordsRepository repo) {
 		return args -> {
 			repo.deleteAll();
-			IntStream.range(0, 1000).parallel().forEach(value -> {
+			IntStream.range(0, 10).parallel().forEach(value -> {
 				final Random rnd = new Random();
 				final List<DataPoint> source = new ArrayList<>();
 				
