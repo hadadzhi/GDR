@@ -34,7 +34,7 @@ public class Record {
 	private String id;
 	
 	/**
-	 * Enables optimistic version control
+	 * Enables optimistic concurrency control
 	 */
 	@Version
 	@JsonIgnore
