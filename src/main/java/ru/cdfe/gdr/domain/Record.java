@@ -26,10 +26,16 @@ import static ru.cdfe.gdr.constants.Relations.RECORD_COLLECTION;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Relation(value = RECORD, collectionRelation = RECORD_COLLECTION)
 public class Record {
+	/**
+	 * Exfor subent number or internal generated id
+	 */
 	@Id
 	@JsonIgnore
 	private String id;
 	
+	/**
+	 * Enables optimistic version control
+	 */
 	@Version
 	@JsonIgnore
 	private BigInteger version;
