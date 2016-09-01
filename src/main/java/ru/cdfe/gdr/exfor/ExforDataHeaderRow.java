@@ -3,6 +3,7 @@ package ru.cdfe.gdr.exfor;
 import lombok.*;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -11,12 +12,10 @@ import javax.persistence.Table;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class ExforDataHeaderRow {
-	@Column(name = "subent")
-	private String subEntNumber;
-	
-	@Column(name = "col")
-	private int column;
+	@EmbeddedId
+	private ExforDataHeaderKey key;
 	
 	@Column(name = "head")
 	private String name;

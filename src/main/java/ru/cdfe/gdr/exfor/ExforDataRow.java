@@ -1,11 +1,9 @@
 package ru.cdfe.gdr.exfor;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -14,15 +12,10 @@ import javax.persistence.Table;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class ExforDataRow {
-	@Column(name = "subent")
-	private String subEntNumber;
-
-	@Column(name = "col")
-	private int column;
-	
-	@Column(name = "row")
-	private int row;
+	@EmbeddedId
+	private ExforDataKey key;
 	
 	@Column(name = "dt")
 	private double data;
