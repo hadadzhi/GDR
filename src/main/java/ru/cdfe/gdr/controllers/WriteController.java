@@ -8,26 +8,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.cdfe.gdr.constants.Parameters;
-import ru.cdfe.gdr.constants.Profiles;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Record;
-import ru.cdfe.gdr.repositories.RecordsRepository;
 import ru.cdfe.gdr.services.OperatorService;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 
 @Slf4j
 @RestController
-@Profile(Profiles.OPERATOR)
+@Profile(OPERATOR)
 public class WriteController {
 	private final OperatorService operatorService;
-	private final RecordsRepository records;
 	
 	@Autowired
-	public WriteController(OperatorService operatorService, RecordsRepository records) {
+	public WriteController(OperatorService operatorService) {
 		this.operatorService = operatorService;
-		this.records = records;
 	}
 	
 	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.POST)
