@@ -17,7 +17,6 @@ import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
-import ru.cdfe.gdr.constants.Profiles;
 import ru.cdfe.gdr.domain.*;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 
@@ -66,11 +65,11 @@ public class MongoGDRApplication {
 	}
 	
 	@Bean
-	@Profile(Profiles.OPERATOR)
+	@Profile("init")
 	public ApplicationRunner createTestData(RecordsRepository repo) {
 		return args -> {
 			repo.deleteAll();
-			IntStream.range(0, 100000).parallel().forEach(value -> {
+			IntStream.range(0, 10000).parallel().forEach(value -> {
 				final Random rnd = new Random();
 				final List<DataPoint> source = new ArrayList<>();
 				

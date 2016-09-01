@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MongoGDRApplication [init]" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+      <pattern>
+        <option name="PATTERN" value="ru.cdfe.gdr.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ru.cdfe.gdr.MongoGDRApplication" />
+    <option name="VM_PARAMETERS" value="-Dspring.profiles.active=init" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <module name="GDR" />
+    <envs />
+    <method />
+  </configuration>
+</component>
