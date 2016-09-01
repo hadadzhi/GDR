@@ -70,7 +70,7 @@ public class MongoGDRApplication {
 	public ApplicationRunner createTestData(RecordsRepository repo) {
 		return args -> {
 			repo.deleteAll();
-			IntStream.range(0, 10).parallel().forEach(value -> {
+			IntStream.range(0, 100000).parallel().forEach(value -> {
 				final Random rnd = new Random();
 				final List<DataPoint> source = new ArrayList<>();
 				
@@ -107,8 +107,7 @@ public class MongoGDRApplication {
 				});
 				
 				final Record record = Record.builder()
-					.id(rnd.nextDouble() < 0.1 ? null : // Small percentage of records will not have a corresponding exfor subent
-						UUID.randomUUID().toString().replace("\\-", "").substring(0, 8).toUpperCase())
+					.id(UUID.randomUUID().toString())
 					.energyCenter(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
 					.firstMoment(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
 					.integratedCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV*mb"))

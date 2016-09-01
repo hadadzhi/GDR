@@ -2,10 +2,12 @@
   <dictionary name="hadadzhi">
     <words>
       <w>devel</w>
+      <w>exfor</w>
       <w>lorentzian</w>
       <w>mongod</w>
       <w>mongogdr</w>
       <w>rels</w>
+      <w>subent</w>
     </words>
   </dictionary>
 </component>

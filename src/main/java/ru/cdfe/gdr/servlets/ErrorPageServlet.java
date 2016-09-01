@@ -49,7 +49,7 @@ public class ErrorPageServlet extends HttpServlet {
 			
 			errorResource = new ErrorResource("Internal server error");
 			
-			log.error(String.format(logTemplate, method, uri, uncaughtException));
+			log.error(String.format(logTemplate, method, uri, uncaughtException), uncaughtException);
 		}
 		
 		return errorResource;

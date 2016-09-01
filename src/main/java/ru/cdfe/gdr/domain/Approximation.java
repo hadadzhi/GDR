@@ -29,7 +29,11 @@ public class Approximation {
 	private List<DataPoint> sourceData;
 	
 	public List<DataPoint> getSourceData() {
-		return Collections.unmodifiableList(sourceData);
+		if (sourceData != null) {
+			return Collections.unmodifiableList(sourceData);
+		} else {
+			return Collections.emptyList();
+		}
 	}
 	
 	@NotEmpty
@@ -37,6 +41,10 @@ public class Approximation {
 	private List<Curve> curves;
 	
 	public List<Curve> getCurves() {
-		return Collections.unmodifiableList(curves);
+		if (curves != null) {
+			return Collections.unmodifiableList(curves);
+		} else {
+			return Collections.emptyList();
+		}
 	}
 }
