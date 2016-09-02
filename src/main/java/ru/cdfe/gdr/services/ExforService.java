@@ -98,14 +98,14 @@ public class ExforService {
 		// Leading/trailing zeros are replaced with first/last non-zero element
 		int head;
 		for (head = 0; head < elements.size(); head++) {
-			if (!fpZero(elements.get(head))) {
+			if (!nearZero(elements.get(head))) {
 				break;
 			}
 		}
 		
 		int tail;
 		for (tail = elements.size() - 1; tail >= 0; tail--) {
-			if (!fpZero(elements.get(tail))) {
+			if (!nearZero(elements.get(tail))) {
 				break;
 			}
 		}
@@ -122,22 +122,22 @@ public class ExforService {
 		}
 		
 		// Zeros between non-zero elements are replaced with the result of linear interpolation
-		double prev = 0;
-		double next = 0;
+		double prev = 0.;
+		double next = 0.;
 		int prevIndex = head;
 		int nextIndex = tail;
 		for (int i = head; i < tail; i++) {
 			final double current = elements.get(i);
-			if (!fpZero(current)) {
+			if (!nearZero(current)) {
 				prev = current;
 				prevIndex = i;
-				if (fpEqual(next, current)) {
-					next = 0;
+				if (nearEqual(next, current)) {
+					next = 0.;
 				}
 			} else {
-				if (fpZero(next)) {
+				if (nearZero(next)) {
 					nextIndex = i;
-					while (fpZero(elements.get(nextIndex))) {
+					while (nearZero(elements.get(nextIndex))) {
 						nextIndex++;
 					}
 					next = elements.get(nextIndex);
@@ -147,11 +147,11 @@ public class ExforService {
 		}
 	}
 	
-	private static boolean fpZero(double a) {
-		return fpEqual(a, 0.);
+	private static boolean nearZero(double a) {
+		return nearEqual(a, 0.);
 	}
 	
-	private static boolean fpEqual(double a, double b) {
+	private static boolean nearEqual(double a, double b) {
 		return Math.abs(a - b) < 1E-38; // Minimum non-zero value allowed by EXFOR
 	}
 	
