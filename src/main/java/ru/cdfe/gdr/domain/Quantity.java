@@ -23,6 +23,14 @@ public class Quantity {
 	@NotBlank
 	private String dimension;
 	
+	public Quantity(Double value) {
+		this(value, null, NO_DIM);
+	}
+	
+	public Quantity(Double value, String dimension) {
+		this(value, null, dimension);
+	}
+	
 	public Quantity(Double value, Double error) {
 		this(value, error, NO_DIM);
 	}
