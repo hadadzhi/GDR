@@ -1,6 +1,7 @@
 package ru.cdfe.gdr.services;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +46,11 @@ public class ExforService {
 	
 	@Getter
 	@ToString
+	@RequiredArgsConstructor
 	static final class ExforDataRow {
 		private final int row;
 		private final int col;
 		private final String dim;
 		private final double val;
-		
-		public ExforDataRow(int row, int col, String dim, double val) {
-			this.row = row;
-			this.col = col;
-			this.dim = dim;
-			this.val = val;
-		}
 	}
 }
