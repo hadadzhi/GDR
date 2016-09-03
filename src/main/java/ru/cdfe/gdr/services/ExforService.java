@@ -39,7 +39,7 @@ public class ExforService {
 			"SELECT ddata.row, ddata.col, ddata.dt, dhead.unit\n" +
 			"FROM ddata JOIN dhead ON ddata.col = dhead.col AND ddata.subent = dhead.subent WHERE ddata.subent = ?";
 		
-		final List<DataPoint> result = jdbc
+		final List<DataPoint> data = jdbc
 			.query(query, (rs, row) -> new DBRow(rs.getInt(1), rs.getInt(2), rs.getDouble(3), rs.getString(4)), subEntNumber)
 			.stream()
 			.collect(groupingBy(DBRow::getRow))
@@ -48,13 +48,13 @@ public class ExforService {
 			.map(exforRow -> makeDataPoint(exforRow, energyColumn, csColumn, csErrorColumn, subEntNumber))
 			.collect(toList());
 		
-		if (result.isEmpty()) {
+		if (data.isEmpty()) {
 			throw new NoExforDataException(subEntNumber);
 		}
 		
-		postProcessData(result);
+		postProcessData(data);
 		
-		return result;
+		return data;
 	}
 	
 	private static DataPoint makeDataPoint(List<DBRow> exforRow, int energyColumn, int csColumn, int csErrorColumn, String subEntNumber) {
@@ -78,47 +78,46 @@ public class ExforService {
 	}
 	
 	private static void postProcessData(List<DataPoint> data) {
-		final List<Double> energies = data.stream().map(p -> p.getEnergy().getValue()).collect(toList());
-		final List<Double> crossSections = data.stream().map(p -> p.getCrossSection().getValue()).collect(toList());
-		final List<Double> crossSectionErrors = data.stream().map(p -> p.getCrossSection().getError()).collect(toList());
-		
-		exforInterpolate(energies);
-		exforInterpolate(crossSections);
-		exforInterpolate(crossSectionErrors);
-
-		for (int i = 0; i < data.size(); i++) {
-			final DataPoint current = data.get(i);
-			current.getEnergy().setValue(energies.get(i));
-			current.getCrossSection().setValue(crossSections.get(i));
-			current.getCrossSection().setError(crossSectionErrors.get(i));
-		}
+		exforInterpolate(i -> data.get(i).getEnergy().getValue(), (i, v) -> data.get(i).getEnergy().setValue(v), data.size());
+		exforInterpolate(i -> data.get(i).getCrossSection().getValue(), (i, v) -> data.get(i).getCrossSection().setValue(v), data.size());
+		exforInterpolate(i -> data.get(i).getCrossSection().getError(), (i, v) -> data.get(i).getCrossSection().setError(v), data.size());
 	}
 	
-	private static void exforInterpolate(List<Double> elements) {
+	@FunctionalInterface
+	private interface DoubleListGetter {
+		double get(int index);
+	}
+	
+	@FunctionalInterface
+	private interface DoubleListSetter {
+		void set(int index, double value);
+	}
+	
+	private static void exforInterpolate(DoubleListGetter getter, DoubleListSetter setter, int size) {
 		// Leading/trailing zeros are replaced with first/last non-zero element
 		int head; // Index of the first non-zero element
-		for (head = 0; head < elements.size(); head++) {
-			if (!nearZero(elements.get(head))) {
+		for (head = 0; head < size; head++) {
+			if (!nearZero(getter.get(head))) {
 				break;
 			}
 		}
 		
 		int tail; // Index of the last non-zero element
-		for (tail = elements.size() - 1; tail >= 0; tail--) {
-			if (!nearZero(elements.get(tail))) {
+		for (tail = size - 1; tail >= 0; tail--) {
+			if (!nearZero(getter.get(tail))) {
 				break;
 			}
 		}
 		
-		final double first = elements.get(head);
-		final double last = elements.get(tail);
+		final double first = getter.get(head);
+		final double last = getter.get(tail);
 		
 		for (int i = 0; i < head; i++) {
-			elements.set(i, first);
+			setter.set(i, first);
 		}
 		
-		for (int i = tail; i < elements.size(); i++) {
-			elements.set(i, last);
+		for (int i = tail; i < size; i++) {
+			setter.set(i, last);
 		}
 		
 		// Zero elements between non-zero elements are replaced with the result of linear interpolation
@@ -127,7 +126,7 @@ public class ExforService {
 		int prevIndex = head;
 		int nextIndex = tail;
 		for (int i = head; i < tail; i++) {
-			final double current = elements.get(i);
+			final double current = getter.get(i);
 			if (!nearZero(current)) {
 				prev = current;
 				prevIndex = i;
@@ -137,12 +136,12 @@ public class ExforService {
 			} else {
 				if (nearZero(next)) {
 					nextIndex = i;
-					while (nearZero(elements.get(nextIndex))) {
+					while (nearZero(getter.get(nextIndex))) {
 						nextIndex++;
 					}
-					next = elements.get(nextIndex);
+					next = getter.get(nextIndex);
 				}
-				elements.set(i, prev + (((next - prev) * (i - prevIndex)) / (nextIndex - prevIndex)));
+				setter.set(i, prev + (((next - prev) * (i - prevIndex)) / (nextIndex - prevIndex)));
 			}
 		}
 	}
@@ -178,6 +177,6 @@ class TestExforService implements ApplicationRunner {
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		exforService.getData("M0040002", 0, 1, 2).forEach(p -> log.info(p.toString()));
+		exforService.getData("L0028002", 0, 1, 2).forEach(p -> log.info(p.toString()));
 	}
 }
