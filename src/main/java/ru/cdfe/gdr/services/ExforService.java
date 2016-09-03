@@ -2,7 +2,6 @@ package ru.cdfe.gdr.services;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -37,7 +36,9 @@ public class ExforService {
 	public List<DataPoint> getData(String subEntNumber, int energyColumn, int csColumn, int csErrorColumn) {
 		final String query =
 			"SELECT ddata.row, ddata.col, ddata.dt, dhead.unit\n" +
-			"FROM ddata JOIN dhead ON ddata.col = dhead.col AND ddata.subent = dhead.subent WHERE ddata.subent = ?";
+			"FROM ddata\n" +
+			"JOIN dhead ON ddata.col = dhead.col AND ddata.subent = dhead.subent AND ddata.isc = dhead.isc\n" +
+			"WHERE ddata.isc = 'd' AND ddata.subent = ?";
 		
 		final List<DataPoint> data = jdbc
 			.query(query, (rs, row) -> new DBRow(rs.getInt(1), rs.getInt(2), rs.getDouble(3), rs.getString(4)), subEntNumber)
@@ -155,7 +156,6 @@ public class ExforService {
 	}
 	
 	@Getter
-	@ToString
 	@RequiredArgsConstructor
 	static final class DBRow {
 		private final int row;
@@ -163,20 +163,19 @@ public class ExforService {
 		private final double val;
 		private final String dim;
 	}
-}
-
-@Component
-@Slf4j
-class TestExforService implements ApplicationRunner {
-	private final ExforService exforService;
 	
-	@Autowired
-	public TestExforService(ExforService exforService) {
-		this.exforService = exforService;
-	}
-	
-	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		exforService.getData("L0028002", 0, 1, 2).forEach(p -> log.info(p.toString()));
+	@Component
+	static class TestExforService implements ApplicationRunner {
+		private final ExforService exforService;
+		
+		@Autowired
+		public TestExforService(ExforService exforService) {
+			this.exforService = exforService;
+		}
+		
+		@Override
+		public void run(ApplicationArguments args) throws Exception {
+			exforService.getData("M0040004", 0, 1, 2).forEach(p -> log.info(p.toString()));
+		}
 	}
 }
