@@ -4,8 +4,6 @@ import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 import ru.cdfe.gdr.validation.Finite;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @ToString
@@ -13,29 +11,28 @@ import javax.validation.constraints.NotNull;
 public class Quantity {
 	public static final String NO_DIM = "NO-DIM";
 	
-	@NotNull
 	@Finite
-	private Double value;
+	private double value;
 	
 	@Finite
-	private Double error;
+	private double error;
 	
 	@NotBlank
 	private String dimension;
 	
-	public Quantity(Double value) {
-		this(value, null, NO_DIM);
+	public Quantity(double value) {
+		this(value, 0., NO_DIM);
 	}
 	
-	public Quantity(Double value, String dimension) {
-		this(value, null, dimension);
+	public Quantity(double value, String dimension) {
+		this(value, 0., dimension);
 	}
 	
-	public Quantity(Double value, Double error) {
+	public Quantity(double value, double error) {
 		this(value, error, NO_DIM);
 	}
 	
-	public Quantity(Double value, Double error, String dimension) {
+	public Quantity(double value, double error, String dimension) {
 		this.value = value;
 		this.error = error;
 		this.dimension = dimension;

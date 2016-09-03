@@ -19,11 +19,11 @@ public class Approximation {
 	@NotBlank
 	private String description;
 	
-	@Finite // TODO and non-null?
-	private Double chiSquaredWeighted;
+	@Finite
+	private double chiSquaredWeighted;
 	
-	@Finite // TODO and non-null?
-	private Double chiSquaredUnweighted;
+	@Finite
+	private double chiSquaredUnweighted;
 	
 	@Valid
 	private List<DataPoint> sourceData;

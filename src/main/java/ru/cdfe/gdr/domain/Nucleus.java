@@ -20,7 +20,7 @@ public class Nucleus {
 	@Min(1)
 	private Integer mass;
 	
-	@NotNull // TODO not blank?
+	@NotNull
 	private String symbol;
 	
 	public Nucleus(Integer charge, Integer mass) {
