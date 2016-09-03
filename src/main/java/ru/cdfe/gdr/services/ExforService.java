@@ -122,37 +122,26 @@ public class ExforService {
 		}
 		
 		// Zero elements between non-zero elements are replaced with the result of linear interpolation
-		double prev = 0.;
-		double next = 0.;
-		int prevIndex = head;
-		int nextIndex = tail;
-		for (int i = head; i < tail; i++) {
+		int prevPos = head;
+		double prev = getter.get(head);
+		for (int i = head + 1; i < tail; i++) {
 			final double current = getter.get(i);
 			if (!nearZero(current)) {
 				prev = current;
-				prevIndex = i;
-				if (nearEqual(next, current)) {
-					next = 0.;
-				}
+				prevPos = i;
 			} else {
-				if (nearZero(next)) {
-					nextIndex = i;
-					while (nearZero(getter.get(nextIndex))) {
-						nextIndex++;
-					}
-					next = getter.get(nextIndex);
+				int nextPos = i + 1;
+				while (nearZero(getter.get(nextPos))) {
+					nextPos++;
 				}
-				setter.set(i, prev + (((next - prev) * (i - prevIndex)) / (nextIndex - prevIndex)));
+				double next = getter.get(nextPos);
+				setter.set(i, prev + (((next - prev) * (i - prevPos)) / (nextPos - prevPos)));
 			}
 		}
 	}
 	
 	private static boolean nearZero(double a) {
-		return nearEqual(a, 0.);
-	}
-	
-	private static boolean nearEqual(double a, double b) {
-		return Math.abs(a - b) < 1E-38; // Minimum non-zero value allowed by EXFOR
+		return Math.abs(a) < 1e-38; // Minimum non-zero absolute value allowed by EXFOR
 	}
 	
 	@Getter
