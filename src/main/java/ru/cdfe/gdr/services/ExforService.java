@@ -96,14 +96,14 @@ public class ExforService {
 	
 	private static void exforInterpolate(List<Double> elements) {
 		// Leading/trailing zeros are replaced with first/last non-zero element
-		int head;
+		int head; // Index of the first non-zero element
 		for (head = 0; head < elements.size(); head++) {
 			if (!nearZero(elements.get(head))) {
 				break;
 			}
 		}
 		
-		int tail;
+		int tail; // Index of the last non-zero element
 		for (tail = elements.size() - 1; tail >= 0; tail--) {
 			if (!nearZero(elements.get(tail))) {
 				break;
@@ -121,7 +121,7 @@ public class ExforService {
 			elements.set(i, last);
 		}
 		
-		// Zeros between non-zero elements are replaced with the result of linear interpolation
+		// Zero elements between non-zero elements are replaced with the result of linear interpolation
 		double prev = 0.;
 		double next = 0.;
 		int prevIndex = head;
@@ -142,7 +142,7 @@ public class ExforService {
 					}
 					next = elements.get(nextIndex);
 				}
-				elements.set(i, prev + (next - prev) * (i - prevIndex) / (nextIndex - prevIndex));
+				elements.set(i, prev + (((next - prev) * (i - prevIndex)) / (nextIndex - prevIndex)));
 			}
 		}
 	}
@@ -178,9 +178,6 @@ class TestExforService implements ApplicationRunner {
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		final long start = System.currentTimeMillis();
 		exforService.getData("M0040002", 0, 1, 2).forEach(p -> log.info(p.toString()));
-		final long end = System.currentTimeMillis() - start;
-		log.info(Long.toString(end));
 	}
 }
