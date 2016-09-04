@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 public final class Parameters {
 	public static final String ID = "exfor_subent_number";
 	
+	public static final String ENERGY_COLUMN = "energy_column";
+	public static final String CROSS_SECTION_COLUMN = "cross_section_column";
+	public static final String CROSS_SECTION_ERROR_COLUMN = "cross_section_error_column";
+	
 	public static final String SIZE = "size";
 	public static final String PAGE = "page";
 	public static final String SORT = "sort";

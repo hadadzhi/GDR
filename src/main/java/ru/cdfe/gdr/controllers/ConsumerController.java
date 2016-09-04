@@ -23,11 +23,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
-public class ReadController {
+public class ConsumerController {
 	private final RecordsRepository records;
 	
 	@Autowired
-	public ReadController(RecordsRepository records) {
+	public ConsumerController(RecordsRepository records) {
 		this.records = records;
 	}
 	
@@ -35,13 +35,13 @@ public class ReadController {
 	public PagedResources<Resource<Record>> findAll(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
 		return assembler.toResource(
 			records.findAll(pageable),
-			record -> new Resource<>(record, linkTo(methodOn(ReadController.class).findRecord(record.getId())).withSelfRel())
+			record -> new Resource<>(record, linkTo(methodOn(ConsumerController.class).findRecord(record.getId())).withSelfRel())
 		);
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.GET)
 	public Resource<Record> findRecord(@RequestParam(Parameters.ID) String id) {
 		final Record record = Optional.ofNullable(records.findOne(id)).orElseThrow(NoSuchRecordException::new);
-		return new Resource<>(record, linkTo(methodOn(ReadController.class).findRecord(record.getId())).withSelfRel());
+		return new Resource<>(record, linkTo(methodOn(ConsumerController.class).findRecord(record.getId())).withSelfRel());
 	}
 }

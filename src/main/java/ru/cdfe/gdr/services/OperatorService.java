@@ -34,23 +34,13 @@ public class OperatorService {
 		records.delete(id);
 	}
 	
-	public void putRecord(String id, @Valid Record newRecord) {
-		final Optional<Record> oldRecord = Optional.ofNullable(records.findOne(id));
+	public void putRecord(@Valid Record newRecord) {
+		final Optional<Record> oldRecord = Optional.ofNullable(records.findOne(newRecord.getId()));
 		
 		if (oldRecord.isPresent()) {
-			newRecord.setId(oldRecord.get().getId());
 			newRecord.setVersion(oldRecord.get().getVersion());
-		} else if (isExistingExforSubEnt(id)) {
-			newRecord.setId(id);
-		} else {
-			throw new NoSuchRecordException();
 		}
 		
 		records.save(newRecord);
-	}
-	
-	private boolean isExistingExforSubEnt(String subEntNumber) {
-		// TODO check for exfor subent existence
-		return false;
 	}
 }

@@ -6,9 +6,6 @@ import com.mongodb.WriteConcern;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -26,7 +23,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
-@SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
+@SpringBootApplication
 @ServletComponentScan
 public class GDRApplication {
 	public static void main(String[] args) {
@@ -54,11 +51,6 @@ public class GDRApplication {
 			.writeConcern(WriteConcern.MAJORITY)
 			.readConcern(ReadConcern.MAJORITY)
 			.build();
-	}
-	
-	@Bean
-	public EmbeddedServletContainerCustomizer errorPageCustomizer() {
-		return container -> container.addErrorPages(new ErrorPage("/error"));
 	}
 	
 	@Bean

@@ -7,4 +7,7 @@ import lombok.NoArgsConstructor;
 public final class Relations {
 	public static final String RECORD = "record";
 	public static final String RECORD_COLLECTION = "records";
+	
+	public static final String EXFOR_DATA = "exfor_data";
+	public static final String EXFOR_REACTIONS = "exfor_reactions";
 }
