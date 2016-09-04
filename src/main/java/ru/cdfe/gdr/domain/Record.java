@@ -11,7 +11,7 @@ import org.springframework.hateoas.core.Relation;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.cdfe.gdr.constants.Relations.RECORD;
@@ -44,11 +44,11 @@ public class Record {
 	private List<DataPoint> sourceData;
 	
 	public List<DataPoint> getSourceData() {
-		if (sourceData != null) {
-			return Collections.unmodifiableList(sourceData);
-		} else {
-			return Collections.emptyList();
+		if (sourceData == null) {
+			sourceData = new ArrayList<>();
 		}
+
+		return sourceData;
 	}
 	
 	@NotEmpty
@@ -56,24 +56,24 @@ public class Record {
 	private List<Approximation> approximations;
 	
 	public List<Approximation> getApproximations() {
-		if (approximations != null) {
-			return Collections.unmodifiableList(approximations);
-		} else {
-			return Collections.emptyList();
+		if (approximations == null) {
+			approximations = new ArrayList<>();
 		}
+
+		return approximations;
 	}
 	
 	@NotNull
 	@Valid
-	private Nucleus target;
+	private List<Reaction> reactions;
 	
-	@NotNull
-	@Valid
-	private Nucleus product;
-	
-	@NotNull
-	@Valid
-	private Reaction reaction;
+	public List<Reaction> getReactions() {
+		if (reactions == null) {
+			reactions = new ArrayList<>();
+		}
+
+		return reactions;
+	}
 	
 	@NotNull
 	@Valid

@@ -21,10 +21,7 @@ import ru.cdfe.gdr.domain.*;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -105,14 +102,26 @@ public class MongoGDRApplication {
 					approximations.add(approximation);
 				});
 				
+				final Reaction reaction1 = Reaction.builder()
+					.incident("A")
+					.outgoing("B")
+					.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "XX"))
+					.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "YY"))
+					.build();
+				
+				final Reaction reaction2 = Reaction.builder()
+					.incident("C")
+					.outgoing("D")
+					.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "ZZ"))
+					.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "WW"))
+					.build();
+				
 				final Record record = Record.builder()
 					.id(UUID.randomUUID().toString())
 					.energyCenter(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
 					.firstMoment(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
 					.integratedCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV*mb"))
-					.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "ZZ"))
-					.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "ZZ"))
-					.reaction(new Reaction("A", "B"))
+					.reactions(Arrays.asList(reaction1, reaction2))
 					.sourceData(source)
 					.approximations(approximations)
 					.build();

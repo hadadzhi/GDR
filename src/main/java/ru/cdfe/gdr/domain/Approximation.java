@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import ru.cdfe.gdr.validation.Finite;
 
 import javax.validation.Valid;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -29,11 +29,11 @@ public class Approximation {
 	private List<DataPoint> sourceData;
 	
 	public List<DataPoint> getSourceData() {
-		if (sourceData != null) {
-			return Collections.unmodifiableList(sourceData);
-		} else {
-			return Collections.emptyList();
+		if (sourceData == null) {
+			sourceData = new ArrayList<>();
 		}
+		
+		return sourceData;
 	}
 	
 	@NotEmpty
@@ -41,10 +41,10 @@ public class Approximation {
 	private List<Curve> curves;
 	
 	public List<Curve> getCurves() {
-		if (curves != null) {
-			return Collections.unmodifiableList(curves);
-		} else {
-			return Collections.emptyList();
+		if (curves == null) {
+			curves = new ArrayList<>();
 		}
+		
+		return curves;
 	}
 }
