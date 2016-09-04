@@ -28,13 +28,13 @@ import static java.util.stream.Collectors.toList;
 
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
 @ServletComponentScan
-public class MongoGDRApplication {
+public class GDRApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(MongoGDRApplication.class, args);
+		SpringApplication.run(GDRApplication.class, args);
 	}
 	
 	@Bean
-	public CurieProvider curieProvider(MongoGDRProperties conf) {
+	public CurieProvider curieProvider(GDRProperties conf) {
 		return new DefaultCurieProvider(conf.getCurieName(), new UriTemplate(conf.getCurieUrlTemplate()));
 	}
 	
@@ -105,15 +105,15 @@ public class MongoGDRApplication {
 				final Reaction reaction1 = Reaction.builder()
 					.incident("A")
 					.outgoing("B")
-					.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "XX"))
-					.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "YY"))
+					.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1))
+					.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1))
 					.build();
 				
 				final Reaction reaction2 = Reaction.builder()
 					.incident("C")
 					.outgoing("D")
-					.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "ZZ"))
-					.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1, "WW"))
+					.target(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1))
+					.product(new Nucleus(rnd.nextInt(100) + 1, rnd.nextInt(100) + 1))
 					.build();
 				
 				final Record record = Record.builder()

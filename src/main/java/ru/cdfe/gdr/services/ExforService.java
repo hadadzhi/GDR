@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import ru.cdfe.gdr.domain.DataPoint;
+import ru.cdfe.gdr.domain.Nucleus;
 import ru.cdfe.gdr.domain.Quantity;
 import ru.cdfe.gdr.domain.Reaction;
 import ru.cdfe.gdr.exceptions.BadExforDataException;
@@ -48,7 +50,22 @@ public class ExforService {
 		}
 		
 		private List<Reaction> retrieveReactions() {
-			return null; // TODO
+			final String query =
+				"SELECT react1.tz, react1.ta, react1.pz, react1.pa, react1.inc, react1.`out`\n" +
+				"FROM react1\n" +
+				"WHERE react1.subent = ?";
+			
+			final RowMapper<Reaction> rowMapper = (rs, row) -> Reaction.builder()
+				.target(new Nucleus(rs.getInt("tz"), rs.getInt("ta")))
+				.product(new Nucleus(rs.getInt("pz"), rs.getInt("pa")))
+				.incident(rs.getString("inc"))
+				.outgoing(rs.getString("out"))
+				.build();
+			
+			return jdbc
+				.query(query, rowMapper, subEntNumber)
+				.stream()
+				.collect(toList());
 		}
 	}
 	
@@ -74,8 +91,10 @@ public class ExforService {
 				"JOIN dhead ON ddata.col = dhead.col AND ddata.subent = dhead.subent AND ddata.isc = dhead.isc\n" +
 				"WHERE ddata.isc = 'd' AND ddata.subent = ?";
 			
+			final RowMapper<DBRow> rowMapper = (rs, row) -> new DBRow(rs.getInt("row"), rs.getInt("col"), rs.getDouble("dt"), rs.getString("unit"));
+			
 			final List<DataPoint> data = jdbc
-				.query(query, (rs, row) -> new DBRow(rs.getInt(1), rs.getInt(2), rs.getDouble(3), rs.getString(4)), subEntNumber)
+				.query(query, rowMapper, subEntNumber)
 				.stream()
 				.collect(groupingBy(DBRow::getRow))
 				.values()

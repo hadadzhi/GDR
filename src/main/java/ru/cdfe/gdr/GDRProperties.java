@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties("gdr")
-public class MongoGDRProperties {
+public class GDRProperties {
 	@NotBlank
 	private String curieName;
 	

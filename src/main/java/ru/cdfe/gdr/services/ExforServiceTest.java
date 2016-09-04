@@ -23,5 +23,6 @@ public class ExforServiceTest implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		exforService.getData("M0040004", 0, 1, 2).forEach(p -> log.info(p.toString()));
+		exforService.getReactions("L0028002").forEach(r -> log.info(r.toString()));
 	}
 }
