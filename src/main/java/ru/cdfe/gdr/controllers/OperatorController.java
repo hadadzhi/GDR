@@ -7,7 +7,6 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.cdfe.gdr.constants.Parameters;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Record;
 import ru.cdfe.gdr.exceptions.NoSuchRecordException;
@@ -18,6 +17,7 @@ import javax.validation.Validator;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static ru.cdfe.gdr.constants.Parameters.*;
 import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 
 @Slf4j
@@ -36,10 +36,11 @@ public class OperatorController {
 	}
 	
 	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.POST)
-	public ResponseEntity<?> insertRecord(@RequestBody Resource<Record> requestEntity) {
+	public ResponseEntity<?> postRecord(@RequestBody Resource<Record> requestEntity) {
 		Record newRecord = requestEntity.getContent();
 		
 		validator.validate(newRecord);
+		
 		newRecord = records.save(newRecord);
 		
 		return ResponseEntity.created(linkTo(methodOn(ConsumerController.class).findRecord(newRecord.getId())).toUri()).build();
@@ -47,15 +48,16 @@ public class OperatorController {
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void replaceRecord(@RequestParam(Parameters.ID) String id, @RequestBody Resource<Record> request) {
+	public void putRecord(@RequestParam(ID) String id, @RequestBody Resource<Record> request) {
 		final Record newRecord = request.getContent();
 		
 		validator.validate(newRecord);
 		
+		newRecord.setId(id);
+		
 		final Record oldRecord = records.findOne(id);
 		
 		if (oldRecord != null) {
-			newRecord.setId(oldRecord.getId());
 			newRecord.setVersion(oldRecord.getVersion());
 		}
 		
@@ -64,7 +66,7 @@ public class OperatorController {
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteRecord(@RequestParam(Parameters.ID) String id) {
+	public void deleteRecord(@RequestParam(ID) String id) {
 		if (!records.exists(id)) {
 			throw new NoSuchRecordException();
 		}
@@ -73,19 +75,20 @@ public class OperatorController {
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.POST)
-	public Resource<Record> generateRecord(@RequestParam(Parameters.ID) String subEntNumber,
-	                                       @RequestParam(Parameters.ENERGY_COLUMN) int energyColumn,
-	                                       @RequestParam(Parameters.CROSS_SECTION_COLUMN) int crossSectionColumn,
-	                                       @RequestParam(Parameters.CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
+	public Resource<Record> createRecord(@RequestParam(ID) String subEntNumber,
+	                                     @RequestParam(ENERGY_COLUMN) int energyColumn,
+	                                     @RequestParam(CROSS_SECTION_COLUMN) int crossSectionColumn,
+	                                     @RequestParam(CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
 		return new Resource<>(
 			Record.builder()
 				.sourceData(exforService.getData(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn))
 				.reactions(exforService.getReactions(subEntNumber))
 				// TODO calculate GDR properties
 				.build(),
-			linkTo(methodOn(OperatorController.class).generateRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
+			// TODO link to "create approximation" endpoint
+			linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
 		);
 	}
 	
-	// TODO approximation endpoint
+	// TODO "create approximation" endpoint
 }
