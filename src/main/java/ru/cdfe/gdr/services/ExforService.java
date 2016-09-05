@@ -125,7 +125,8 @@ public class ExforService {
 			
 			return new DataPoint(
 				new Quantity(energy.getVal(), energy.getDim()),
-				new Quantity(crossSection.getVal(), crossSectionError.getVal(), crossSection.getDim()));
+				new Quantity(crossSection.getVal(), crossSectionError.getVal(), crossSection.getDim())
+			);
 		}
 		
 		private DBRow extractColumn(List<DBRow> exforRow, int column) {
