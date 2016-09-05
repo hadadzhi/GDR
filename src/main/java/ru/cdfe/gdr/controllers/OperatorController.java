@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.cdfe.gdr.constants.Parameters;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Record;
+import ru.cdfe.gdr.exceptions.NoSuchRecordException;
+import ru.cdfe.gdr.repositories.RecordsRepository;
 import ru.cdfe.gdr.services.ExforService;
-import ru.cdfe.gdr.services.OperatorService;
+
+import javax.validation.Validator;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -21,32 +24,52 @@ import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 @RestController
 @Profile(OPERATOR)
 public class OperatorController {
-	private final OperatorService operatorService;
 	private final ExforService exforService;
+	private final RecordsRepository records;
+	private final Validator validator;
 	
 	@Autowired
-	public OperatorController(OperatorService operatorService, ExforService exforService) {
-		this.operatorService = operatorService;
+	public OperatorController(ExforService exforService, RecordsRepository records, Validator validator) {
 		this.exforService = exforService;
+		this.records = records;
+		this.validator = validator;
 	}
 	
 	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.POST)
 	public ResponseEntity<?> insertRecord(@RequestBody Resource<Record> requestEntity) {
-		final Record insertedRecord = operatorService.insertRecord(requestEntity.getContent());
-		return ResponseEntity.created(linkTo(methodOn(ConsumerController.class).findRecord(insertedRecord.getId())).toUri()).build();
+		Record newRecord = requestEntity.getContent();
+		
+		validator.validate(newRecord);
+		newRecord = records.save(newRecord);
+		
+		return ResponseEntity.created(linkTo(methodOn(ConsumerController.class).findRecord(newRecord.getId())).toUri()).build();
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void replaceRecord(@RequestParam(Parameters.ID) String id, @RequestBody Resource<Record> request) {
-		request.getContent().setId(id);
-		operatorService.putRecord(request.getContent());
+		final Record newRecord = request.getContent();
+		
+		validator.validate(newRecord);
+		
+		final Record oldRecord = records.findOne(id);
+		
+		if (oldRecord != null) {
+			newRecord.setId(oldRecord.getId());
+			newRecord.setVersion(oldRecord.getVersion());
+		}
+		
+		records.save(newRecord);
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteRecord(@RequestParam(Parameters.ID) String id) {
-		operatorService.deleteRecord(id);
+		if (!records.exists(id)) {
+			throw new NoSuchRecordException();
+		}
+		
+		records.delete(id);
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.POST)
