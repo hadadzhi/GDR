@@ -13,7 +13,6 @@ import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import ru.cdfe.gdr.domain.*;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 
@@ -38,11 +37,6 @@ public class GDRApplication {
 	@Bean
 	public Validator validator() {
 		return new LocalValidatorFactoryBean();
-	}
-	
-	@Bean
-	public MethodValidationPostProcessor methodValidationPostProcessor() {
-		return new MethodValidationPostProcessor();
 	}
 	
 	@Bean
