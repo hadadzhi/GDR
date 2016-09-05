@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.joining;
 
 @Slf4j
 @RestControllerAdvice
-public class ExceptionHandlingControllerAdvice {
+public class ExceptionHandlers {
 	private static final String logTemplate = "Request: [%s], Exception: [%s]";
 	
 	private static String parseRequest(HttpServletRequest request) {
