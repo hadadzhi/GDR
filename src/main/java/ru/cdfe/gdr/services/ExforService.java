@@ -3,12 +3,9 @@ package ru.cdfe.gdr.services;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.cdfe.gdr.domain.DataPoint;
 import ru.cdfe.gdr.domain.Nucleus;
@@ -24,9 +21,9 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 
+@Slf4j
 @Service
 @Profile(OPERATOR)
-@Slf4j
 public class ExforService {
 	private final JdbcTemplate jdbc;
 	
@@ -218,24 +215,6 @@ public class ExforService {
 				this.val = val;
 				this.dim = dim;
 			}
-		}
-	}
-	
-	@Component
-	@Profile(OPERATOR)
-	@Slf4j
-	public static class ExforServiceTest implements ApplicationRunner {
-		private final ExforService exforService;
-		
-		@Autowired
-		public ExforServiceTest(ExforService exforService) {
-			this.exforService = exforService;
-		}
-		
-		@Override
-		public void run(ApplicationArguments args) throws Exception {
-			exforService.getData("M0040004", 0, 1, 2).forEach(p -> log.info(p.toString()));
-			exforService.getReactions("L0028002").forEach(r -> log.info(r.toString()));
 		}
 	}
 }

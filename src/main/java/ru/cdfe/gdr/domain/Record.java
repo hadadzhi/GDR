@@ -63,7 +63,7 @@ public class Record {
 		return approximations;
 	}
 	
-	@NotNull
+	@NotEmpty
 	@Valid
 	private List<Reaction> reactions;
 	

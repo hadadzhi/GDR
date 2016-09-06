@@ -7,14 +7,22 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.cdfe.gdr.GDRComputations;
 import ru.cdfe.gdr.constants.Relations;
+import ru.cdfe.gdr.domain.DataPoint;
 import ru.cdfe.gdr.domain.Record;
+import ru.cdfe.gdr.exceptions.BadRequestException;
 import ru.cdfe.gdr.exceptions.NoSuchRecordException;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 import ru.cdfe.gdr.services.ExforService;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.StreamSupport;
 
+import static java.util.stream.Collectors.joining;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static ru.cdfe.gdr.constants.Parameters.*;
@@ -35,11 +43,23 @@ public class OperatorController {
 		this.validator = validator;
 	}
 	
+	private <T> void validate(T object) {
+		final Set<ConstraintViolation<T>> violations = validator.validate(object);
+		
+		if (!violations.isEmpty()) {
+			final String message = violations.stream()
+				.map(v -> StreamSupport.stream(v.getPropertyPath().spliterator(), false).reduce((r, e) -> e).orElse(null) + " " + v.getMessage())
+				.collect(joining(", "));
+
+			throw new BadRequestException(message);
+		}
+	}
+	
 	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.POST)
 	public ResponseEntity<?> postRecord(@RequestBody Resource<Record> requestEntity) {
 		Record newRecord = requestEntity.getContent();
 		
-		validator.validate(newRecord);
+		validate(newRecord);
 		
 		newRecord = records.save(newRecord);
 		
@@ -51,7 +71,7 @@ public class OperatorController {
 	public void putRecord(@RequestParam(ID) String id, @RequestBody Resource<Record> request) {
 		final Record newRecord = request.getContent();
 		
-		validator.validate(newRecord);
+		validate(newRecord);
 		
 		newRecord.setId(id);
 		
@@ -79,11 +99,16 @@ public class OperatorController {
 	                                     @RequestParam(ENERGY_COLUMN) int energyColumn,
 	                                     @RequestParam(CROSS_SECTION_COLUMN) int crossSectionColumn,
 	                                     @RequestParam(CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
+		final List<DataPoint> sourceData = exforService.getData(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn);
+		final GDRComputations computations = new GDRComputations(sourceData);
+		
 		return new Resource<>(
 			Record.builder()
-				.sourceData(exforService.getData(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn))
 				.reactions(exforService.getReactions(subEntNumber))
-				// TODO calculate GDR properties
+				.sourceData(sourceData)
+				.integratedCrossSection(computations.getIntegratedCrossSection())
+				.firstMoment(computations.getFirstMoment())
+				.energyCenter(computations.getEnergyCenter())
 				.build(),
 			// TODO link to "create approximation" endpoint
 			linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()

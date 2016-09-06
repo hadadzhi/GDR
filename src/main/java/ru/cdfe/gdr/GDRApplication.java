@@ -6,7 +6,6 @@ import com.mongodb.WriteConcern;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.UriTemplate;
@@ -23,7 +22,6 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 
 @SpringBootApplication
-@ServletComponentScan
 public class GDRApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GDRApplication.class, args);
