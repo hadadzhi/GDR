@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.function.IntToDoubleFunction;
 
 @Getter
-public final class GDRComputations {
+public final class GDRParameters {
 	private final Quantity integratedCrossSection;
 	private final Quantity firstMoment;
 	private final Quantity energyCenter;
 	
-	public GDRComputations(List<DataPoint> sourceData) {
+	public GDRParameters(List<DataPoint> sourceData) {
 		if (sourceData == null) {
 			throw new NullPointerException();
 		}

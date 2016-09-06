@@ -28,7 +28,7 @@ public class GDRApplication {
 	}
 	
 	@Bean
-	public CurieProvider curieProvider(GDRProperties conf) {
+	public CurieProvider curieProvider(GDRApplicationProperties conf) {
 		return new DefaultCurieProvider(conf.getCurieName(), new UriTemplate(conf.getCurieUrlTemplate()));
 	}
 	

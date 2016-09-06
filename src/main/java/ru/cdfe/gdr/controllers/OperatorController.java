@@ -7,7 +7,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.cdfe.gdr.GDRComputations;
+import ru.cdfe.gdr.GDRParameters;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.DataPoint;
 import ru.cdfe.gdr.domain.Record;
@@ -100,7 +100,7 @@ public class OperatorController {
 	                                     @RequestParam(CROSS_SECTION_COLUMN) int crossSectionColumn,
 	                                     @RequestParam(CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
 		final List<DataPoint> sourceData = exforService.getData(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn);
-		final GDRComputations computations = new GDRComputations(sourceData);
+		final GDRParameters computations = new GDRParameters(sourceData);
 		
 		return new Resource<>(
 			Record.builder()

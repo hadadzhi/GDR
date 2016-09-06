@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties("gdr")
-public class GDRProperties {
+public class GDRApplicationProperties {
 	@NotBlank
 	private String curieName;
 	
