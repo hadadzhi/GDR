@@ -100,15 +100,15 @@ public class OperatorController {
 	                                     @RequestParam(CROSS_SECTION_COLUMN) int crossSectionColumn,
 	                                     @RequestParam(CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
 		final List<DataPoint> sourceData = exforService.getData(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn);
-		final GDRParameters computations = new GDRParameters(sourceData);
+		final GDRParameters parameters = new GDRParameters(sourceData);
 		
 		return new Resource<>(
 			Record.builder()
 				.reactions(exforService.getReactions(subEntNumber))
 				.sourceData(sourceData)
-				.integratedCrossSection(computations.getIntegratedCrossSection())
-				.firstMoment(computations.getFirstMoment())
-				.energyCenter(computations.getEnergyCenter())
+				.integratedCrossSection(parameters.getIntegratedCrossSection())
+				.firstMoment(parameters.getFirstMoment())
+				.energyCenter(parameters.getEnergyCenter())
 				.build(),
 			// TODO link to "create approximation" endpoint
 			linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
