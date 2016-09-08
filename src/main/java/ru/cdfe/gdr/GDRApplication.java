@@ -75,9 +75,11 @@ public class GDRApplication {
 						curves.add(curve);
 					});
 					
+					final double chiSquared = rnd.nextDouble() * 1000;
+					
 					final Approximation approximation = Approximation.builder()
-						.chiSquaredUnweighted(rnd.nextDouble() * 100)
-						.chiSquaredWeighted(rnd.nextDouble() * 100)
+						.chiSquared(chiSquared)
+						.chiSquaredReduced(chiSquared / (curves.size() * 3))
 						.description("Sample data " + rnd.nextInt())
 						.sourceData(source.stream().limit(source.size() / 2).collect(toList()))
 						.curves(curves)

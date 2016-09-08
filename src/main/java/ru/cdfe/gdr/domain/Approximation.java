@@ -20,10 +20,10 @@ public class Approximation {
 	private String description;
 	
 	@Finite
-	private double chiSquaredWeighted;
+	private double chiSquared;
 	
 	@Finite
-	private double chiSquaredUnweighted;
+	private double chiSquaredReduced;
 	
 	@Valid
 	private List<DataPoint> sourceData;
