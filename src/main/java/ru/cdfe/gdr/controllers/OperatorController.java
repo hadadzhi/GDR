@@ -11,18 +11,17 @@ import ru.cdfe.gdr.GDRParameters;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.DataPoint;
 import ru.cdfe.gdr.domain.Record;
-import ru.cdfe.gdr.exceptions.BadRequestException;
 import ru.cdfe.gdr.exceptions.NoSuchRecordException;
+import ru.cdfe.gdr.exceptions.ValidationException;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 import ru.cdfe.gdr.services.ExforService;
+import ru.cdfe.gdr.services.FittingService;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.StreamSupport;
 
-import static java.util.stream.Collectors.joining;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static ru.cdfe.gdr.constants.Parameters.*;
@@ -33,12 +32,14 @@ import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 @Profile(OPERATOR)
 public class OperatorController {
 	private final ExforService exforService;
+	private final FittingService fittingService;
 	private final RecordsRepository records;
 	private final Validator validator;
 	
 	@Autowired
-	public OperatorController(ExforService exforService, RecordsRepository records, Validator validator) {
+	public OperatorController(ExforService exforService, FittingService fittingService, RecordsRepository records, Validator validator) {
 		this.exforService = exforService;
+		this.fittingService = fittingService;
 		this.records = records;
 		this.validator = validator;
 	}
@@ -47,11 +48,7 @@ public class OperatorController {
 		final Set<ConstraintViolation<T>> violations = validator.validate(object);
 		
 		if (!violations.isEmpty()) {
-			final String message = violations.stream()
-				.map(v -> StreamSupport.stream(v.getPropertyPath().spliterator(), false).reduce((r, e) -> e).orElse(null) + " " + v.getMessage())
-				.collect(joining(", "));
-
-			throw new BadRequestException(message);
+			throw new ValidationException(violations);
 		}
 	}
 	
@@ -110,10 +107,10 @@ public class OperatorController {
 				.firstMoment(parameters.getFirstMoment())
 				.energyCenter(parameters.getEnergyCenter())
 				.build(),
-			// TODO link to "create approximation" endpoint
+			// TODO link to "fit approximation" endpoint
 			linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
 		);
 	}
 	
-	// TODO "create approximation" endpoint
+	// TODO "fit approximation" endpoint
 }

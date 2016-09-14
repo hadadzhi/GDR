@@ -2,7 +2,7 @@
   <configuration default="false" name="MongoGDRApplication [operator]" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" singleton="true">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
       <pattern>
-        <option name="PATTERN" value="ru.cdfe.gdr.*" />
+        <option name="PATTERN" value="ru.cdfe.gdr.services.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

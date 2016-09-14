@@ -13,13 +13,12 @@ import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import ru.cdfe.gdr.domain.*;
+import ru.cdfe.gdr.services.FittingService;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 
 import javax.validation.Validator;
 import java.util.*;
 import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toList;
 
 @SpringBootApplication
 public class GDRApplication {
@@ -66,7 +65,7 @@ public class GDRApplication {
 					
 					IntStream.range(0, 2).forEach(j -> {
 						Curve curve = Curve.builder()
-							.type(j % 2 == 0 ? "Gaussian" : "Lorentzian")
+							.type(rnd.nextBoolean() ? FittingService.Curves.GAUSSIAN : FittingService.Curves.LORENTZIAN)
 							.energyAtMaxCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
 							.fullWidthAtHalfMaximum(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "MeV"))
 							.maxCrossSection(new Quantity(rnd.nextDouble(), rnd.nextDouble(), "mb"))
@@ -79,9 +78,9 @@ public class GDRApplication {
 					
 					final Approximation approximation = Approximation.builder()
 						.chiSquared(chiSquared)
-						.chiSquaredReduced(chiSquared / (curves.size() * 3))
+						.chiSquaredReduced(chiSquared / (source.size() - (curves.size() * 3)))
 						.description("Sample data " + rnd.nextInt())
-						.sourceData(source.stream().limit(source.size() / 2).collect(toList()))
+						.sourceData(source)
 						.curves(curves)
 						.build();
 					

@@ -1,7 +1,6 @@
 package ru.cdfe.gdr.services;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +20,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 
-@Slf4j
 @Service
 @Profile(OPERATOR)
 public class ExforService {
@@ -39,7 +37,7 @@ public class ExforService {
 	public List<Reaction> getReactions(String subEntNumber) {
 		return new ReactionRetriever(jdbc, subEntNumber).retrieveReactions();
 	}
-	
+
 	private static class ReactionRetriever {
 		private final JdbcTemplate jdbc;
 		private final String subEntNumber;
@@ -50,7 +48,7 @@ public class ExforService {
 		}
 		
 		private List<Reaction> retrieveReactions() {
-			final String query =
+			final String query = "\n" +
 				"SELECT react1.tz, react1.ta, react1.pz, react1.pa, react1.inc, react1.`out`\n" +
 				"FROM react1\n" +
 				"WHERE react1.subent = ?";
@@ -85,7 +83,7 @@ public class ExforService {
 		}
 		
 		private List<DataPoint> retrieveData() {
-			final String query =
+			final String query = "\n" +
 				"SELECT ddata.row, ddata.col, ddata.dt, dhead.unit\n" +
 				"FROM ddata\n" +
 				"JOIN dhead ON ddata.col = dhead.col AND ddata.subent = dhead.subent AND ddata.isc = dhead.isc\n" +

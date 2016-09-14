@@ -79,12 +79,20 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math3</artifactId>
-			<version>3.6.1</version>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-jminuit</artifactId>
+			<version>1.0.2</version>
 		</dependency>
 		
 	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>freehep-maven</id>
+			<name>Maven FreeHEP</name>
+			<url>http://java.freehep.org/maven2</url>
+		</repository>
+	</repositories>
 	
 	<build>
 		<plugins>
@@ -94,5 +102,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	
 </project>
