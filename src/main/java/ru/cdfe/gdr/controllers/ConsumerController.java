@@ -32,7 +32,7 @@ public class ConsumerController {
 	}
 	
 	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.GET)
-	public PagedResources<Resource<Record>> findAll(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
+	public PagedResources<Resource<Record>> listRecords(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
 		return assembler.toResource(
 			records.findAll(pageable),
 			record -> new Resource<>(record, linkTo(methodOn(ConsumerController.class).findRecord(record.getId())).withSelfRel())

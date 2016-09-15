@@ -37,7 +37,7 @@ public class ExforService {
 	public List<Reaction> getReactions(String subEntNumber) {
 		return new ReactionRetriever(jdbc, subEntNumber).retrieveReactions();
 	}
-
+	
 	private static class ReactionRetriever {
 		private final JdbcTemplate jdbc;
 		private final String subEntNumber;

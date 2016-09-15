@@ -17,11 +17,8 @@ public class HomeController {
 		final ResourceSupport home = new ResourceSupport();
 		
 		home.add(linkTo(methodOn(HomeController.class).home()).withSelfRel());
-		
-		home.add(new Link(
-			linkTo(methodOn(ConsumerController.class).findAll(null, null)).toUriComponentsBuilder().toUriString(),
-			Relations.RECORD_COLLECTION
-		));
+
+		home.add(linkTo(methodOn(ConsumerController.class).listRecords(null, null)).withRel(Relations.RECORD_COLLECTION));
 		
 		home.add(new Link(
 			linkTo(methodOn(ConsumerController.class).findRecord("")).toUriComponentsBuilder().replaceQuery(null).toUriString(),

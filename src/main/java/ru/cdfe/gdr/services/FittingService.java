@@ -1,7 +1,6 @@
 package ru.cdfe.gdr.services;
 
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.freehep.math.minuit.FCNBase;
@@ -24,14 +23,31 @@ import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 @Service
 @Profile(OPERATOR)
 public final class FittingService {
-	private static final String PREFIX_LOCATION = "energy";
-	private static final String PREFIX_AMPLITUDE = "cs";
-	private static final String PREFIX_FWHM = "fwhm";
-	private static final String PARAM_NAME_FORMAT = "%s%d";
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public static final class Curves {
+		public static final String GAUSSIAN = "gaussian";
+		public static final String LORENTZIAN = "lorentzian";
+		
+		private static double gaussian(double x, double scale, double loc, double width) {
+			return scale * Math.exp(-0.5 * Math.pow((x - loc) / width, 2.));
+		}
+		
+		private static double lorentzian(double x, double scale, double loc, double width) {
+			return scale / (Math.PI * (width + (Math.pow(x - loc, 2.) / width)));
+		}
+	}
 	
 	public void fit(Approximation approximation) {
+		final MnUserParameters mnUserParameters = new MnUserParameters();
+		
+		for (final Curve curve : approximation.getCurves()) {
+			mnUserParameters.add(UUID.randomUUID().toString(), curve.getMaxCrossSection().getValue(), 1.);
+			mnUserParameters.add(UUID.randomUUID().toString(), curve.getEnergyAtMaxCrossSection().getValue(), 1.);
+			mnUserParameters.add(UUID.randomUUID().toString(), curve.getFullWidthAtHalfMaximum().getValue(), 1.);
+		}
+		
 		final ChiSquaredFCN fcn = new ChiSquaredFCN(approximation.getCurves(), approximation.getSourceData());
-		final FunctionMinimum minimum = new MnMigrad(fcn, fcn.getMnUserParameters()).minimize();
+		final FunctionMinimum minimum = new MnMigrad(fcn, mnUserParameters).minimize();
 		
 		log.info("FunctionMinimum: " + minimum.toString());
 		
@@ -65,20 +81,9 @@ public final class FittingService {
 		private final List<Curve> curves;
 		private final List<DataPoint> sourceData;
 		
-		@Getter
-		private final MnUserParameters mnUserParameters;
-		
 		private ChiSquaredFCN(List<Curve> curves, List<DataPoint> sourceData) {
 			this.curves = curves;
 			this.sourceData = sourceData;
-			
-			this.mnUserParameters = new MnUserParameters();
-			
-			for (final Curve curve : curves) {
-				mnUserParameters.add(UUID.randomUUID().toString(), curve.getMaxCrossSection().getValue(), 1.);
-				mnUserParameters.add(UUID.randomUUID().toString(), curve.getEnergyAtMaxCrossSection().getValue(), 1.);
-				mnUserParameters.add(UUID.randomUUID().toString(), curve.getFullWidthAtHalfMaximum().getValue(), 1.);
-			}
 		}
 		
 		private double model(double x, double[] paramArray) {
@@ -120,27 +125,13 @@ public final class FittingService {
 			
 			for (final DataPoint p : sourceData) {
 				final double model = model(p.getEnergy().getValue(), paramArray);
-				final double observed = p.getCrossSection().getValue();
-				final double observedError = p.getCrossSection().getError();
+				final double data = p.getCrossSection().getValue();
+				final double dataError = p.getCrossSection().getError();
 				
-				chiSquared += Math.pow((observed - model) / observedError, 2.);
+				chiSquared += Math.pow((data - model) / dataError, 2.);
 			}
 			
 			return chiSquared;
-		}
-	}
-	
-	@NoArgsConstructor(access = AccessLevel.PRIVATE)
-	public static final class Curves {
-		public static final String GAUSSIAN = "gaussian";
-		public static final String LORENTZIAN = "lorentzian";
-		
-		static double gaussian(double x, double scale, double loc, double width) {
-			return scale * Math.exp(-0.5 * Math.pow((x - loc) / width, 2.));
-		}
-		
-		static double lorentzian(double x, double scale, double loc, double width) {
-			return scale / (Math.PI * (width + (Math.pow(x - loc, 2.) / width)));
 		}
 	}
 }
