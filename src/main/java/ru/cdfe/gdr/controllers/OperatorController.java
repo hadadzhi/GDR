@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.cdfe.gdr.GDRParameters;
 import ru.cdfe.gdr.constants.Relations;
+import ru.cdfe.gdr.domain.Approximation;
 import ru.cdfe.gdr.domain.DataPoint;
 import ru.cdfe.gdr.domain.Record;
 import ru.cdfe.gdr.exceptions.NoSuchRecordException;
@@ -107,10 +108,18 @@ public class OperatorController {
 				.firstMoment(parameters.getFirstMoment())
 				.energyCenter(parameters.getEnergyCenter())
 				.build(),
-			// TODO link to "fit approximation" endpoint
 			linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
 		);
 	}
 	
-	// TODO "fit approximation" endpoint
+	@RequestMapping(path = Relations.APPROXIMATION, method = RequestMethod.POST)
+	public Resource<Approximation> fitApproximation(@RequestBody Resource<Approximation> request) {
+		final Approximation initialGuess = request.getContent();
+		
+		validate(initialGuess);
+		
+		fittingService.fit(initialGuess);
+		
+		return new Resource<>(initialGuess);
+	}
 }

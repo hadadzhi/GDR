@@ -6,8 +6,6 @@ import java.lang.annotation.*;
 
 /**
  * The annotated element's value must not be infinite or NaN. {@code null} elements are considered valid. Accepts {@link Float} and {@link Double}.
- *
- * @author hadadzhi
  */
 @Documented
 @Target({ ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.CONSTRUCTOR })

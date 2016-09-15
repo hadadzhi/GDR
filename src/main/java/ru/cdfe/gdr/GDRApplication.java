@@ -49,7 +49,7 @@ public class GDRApplication {
 	public ApplicationRunner createTestData(RecordsRepository repo) {
 		return args -> {
 			repo.deleteAll();
-			IntStream.range(0, 10000).parallel().forEach(value -> {
+			IntStream.range(0, 1000).parallel().forEach(value -> {
 				final Random rnd = new Random();
 				final List<DataPoint> source = new ArrayList<>();
 				
