@@ -37,9 +37,23 @@ public final class FittingService {
 		}
 	}
 	
+	/**
+	 * Alters the given {@link Approximation} to best fit its source data.
+	 * This is done by minimizing the chi squared function.
+	 * The parameters of the curves in the given approximation are used as initial guesses.
+	 * After a successful call to this method, the given approximation will contain the fitted parameters of the curves
+	 * as well as the minimized chi squared value.
+	 * If an exception was thrown by the call this method, the given approximation remains as it was before the call.
+	 * @param approximation an {@link Approximation} instance containing the source data and the curves to be fitted
+	 *                      with initial guesses as their parameters
+	 * @throws FittingException if the minimization of chi squared did not converge or if the given approximation object is invalid.
+	 */
 	public void fit(Approximation approximation) {
 		final MnUserParameters mnUserParameters = new MnUserParameters();
 		
+		// The order in which the parameters are added here is very important
+		// as they will be passed to the chi squared function as an array
+		// Use this loop for reference
 		for (final Curve curve : approximation.getCurves()) {
 			mnUserParameters.add(UUID.randomUUID().toString(), curve.getMaxCrossSection().getValue(), 1.);
 			mnUserParameters.add(UUID.randomUUID().toString(), curve.getEnergyAtMaxCrossSection().getValue(), 1.);
@@ -91,23 +105,17 @@ public final class FittingService {
 			
 			int paramIndex = 0;
 			for (final Curve curve : curves) {
+				final double maxCrossSection = paramArray[paramIndex++];
+				final double energyAtMaxCrossSection = paramArray[paramIndex++];
+				final double fullWidth = paramArray[paramIndex++];
+				
 				switch (curve.getType()) {
 					case Curves.GAUSSIAN: {
-						final double maxCrossSection = paramArray[paramIndex++];
-						final double energyAtMaxCrossSection = paramArray[paramIndex++];
-						final double fullWidth = paramArray[paramIndex++];
-						
 						sum += Curves.gaussian(x, maxCrossSection, energyAtMaxCrossSection, fullWidth / (2. * Math.sqrt(2. * Math.log(2.))));
-						
 						break;
 					}
 					case Curves.LORENTZIAN: {
-						final double maxCrossSection = paramArray[paramIndex++];
-						final double energyAtMaxCrossSection = paramArray[paramIndex++];
-						final double fullWidth = paramArray[paramIndex++];
-						
 						sum += Curves.lorentzian(x, (Math.PI / 2) * fullWidth * maxCrossSection, energyAtMaxCrossSection, fullWidth / 2.);
-						
 						break;
 					}
 					default: {

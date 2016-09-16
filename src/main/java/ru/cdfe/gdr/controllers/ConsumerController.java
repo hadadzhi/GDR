@@ -2,6 +2,7 @@ package ru.cdfe.gdr.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
@@ -20,9 +21,11 @@ import java.util.Optional;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static ru.cdfe.gdr.constants.Profiles.NOT_OPERATOR;
 
 @Slf4j
 @RestController
+@Profile(NOT_OPERATOR)
 public class ConsumerController {
 	private final RecordsRepository records;
 	

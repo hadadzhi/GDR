@@ -3,11 +3,15 @@ package ru.cdfe.gdr.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.cdfe.gdr.GDRParameters;
+import ru.cdfe.gdr.constants.Parameters;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Approximation;
 import ru.cdfe.gdr.domain.DataPoint;
@@ -21,6 +25,7 @@ import ru.cdfe.gdr.services.FittingService;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -51,6 +56,24 @@ public class OperatorController {
 		if (!violations.isEmpty()) {
 			throw new ValidationException(violations);
 		}
+	}
+	
+	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.GET)
+	public PagedResources<Resource<Record>> listRecords(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
+		return assembler.toResource(
+			records.findAll(pageable),
+			record -> new Resource<>(record, linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel())
+		);
+	}
+	
+	@RequestMapping(path = Relations.RECORD, method = RequestMethod.GET)
+	public Resource<Record> findRecord(@RequestParam(Parameters.ID) String id) {
+		final Record record = Optional.ofNullable(records.findOne(id)).orElseThrow(NoSuchRecordException::new);
+		return new Resource<>(
+			record,
+			linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.APPROXIMATION),
+			linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
+		);
 	}
 	
 	@RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.POST)
@@ -108,6 +131,7 @@ public class OperatorController {
 				.firstMoment(parameters.getFirstMoment())
 				.energyCenter(parameters.getEnergyCenter())
 				.build(),
+			linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.APPROXIMATION),
 			linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
 		);
 	}
