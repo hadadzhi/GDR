@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cdfe.gdr.constants.Parameters;
+import ru.cdfe.gdr.constants.Profiles;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Record;
 import ru.cdfe.gdr.exceptions.NoSuchRecordException;
@@ -21,11 +22,10 @@ import java.util.Optional;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-import static ru.cdfe.gdr.constants.Profiles.NOT_OPERATOR;
 
 @Slf4j
 @RestController
-@Profile(NOT_OPERATOR)
+@Profile(Profiles.NOT_OPERATOR)
 public class ConsumerController {
 	private final RecordsRepository records;
 	

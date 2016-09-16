@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.cdfe.gdr.GDRParameters;
 import ru.cdfe.gdr.constants.Parameters;
+import ru.cdfe.gdr.constants.Profiles;
 import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Approximation;
 import ru.cdfe.gdr.domain.DataPoint;
@@ -30,12 +31,10 @@ import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-import static ru.cdfe.gdr.constants.Parameters.*;
-import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 
 @Slf4j
 @RestController
-@Profile(OPERATOR)
+@Profile(Profiles.OPERATOR)
 public class OperatorController {
 	private final ExforService exforService;
 	private final FittingService fittingService;
@@ -89,7 +88,7 @@ public class OperatorController {
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void putRecord(@RequestParam(ID) String id, @RequestBody Resource<Record> request) {
+	public void putRecord(@RequestParam(Parameters.ID) String id, @RequestBody Resource<Record> request) {
 		final Record newRecord = request.getContent();
 		
 		validate(newRecord);
@@ -107,7 +106,7 @@ public class OperatorController {
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteRecord(@RequestParam(ID) String id) {
+	public void deleteRecord(@RequestParam(Parameters.ID) String id) {
 		if (!records.exists(id)) {
 			throw new NoSuchRecordException();
 		}
@@ -116,10 +115,10 @@ public class OperatorController {
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.POST)
-	public Resource<Record> createRecord(@RequestParam(ID) String subEntNumber,
-	                                     @RequestParam(ENERGY_COLUMN) int energyColumn,
-	                                     @RequestParam(CROSS_SECTION_COLUMN) int crossSectionColumn,
-	                                     @RequestParam(CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
+	public Resource<Record> createRecord(@RequestParam(Parameters.ID) String subEntNumber,
+	                                     @RequestParam(Parameters.ENERGY_COLUMN) int energyColumn,
+	                                     @RequestParam(Parameters.CROSS_SECTION_COLUMN) int crossSectionColumn,
+	                                     @RequestParam(Parameters.CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
 		final List<DataPoint> sourceData = exforService.getData(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn);
 		final GDRParameters parameters = new GDRParameters(sourceData);
 		
