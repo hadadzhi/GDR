@@ -43,7 +43,7 @@ public final class FittingService {
 	 * The parameters of the curves in the given approximation are used as initial guesses.
 	 * After a successful call to this method, the given approximation will contain the fitted parameters of the curves
 	 * as well as the minimized chi squared value.
-	 * If an exception was thrown by the call this method, the given approximation remains as it was before the call.
+	 * If an exception was thrown by the call to this method, the given approximation remains as it was before the call.
 	 * @param approximation an {@link Approximation} instance containing the source data and the curves to be fitted
 	 *                      with initial guesses as their parameters
 	 * @throws FittingException if the minimization of chi squared did not converge or if the given approximation object is invalid.
