@@ -26,6 +26,7 @@ import ru.cdfe.gdr.services.FittingService;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,13 +62,18 @@ public class OperatorController {
 	public PagedResources<Resource<Record>> listRecords(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
 		return assembler.toResource(
 			records.findAll(pageable),
-			record -> new Resource<>(record, linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel())
+			record -> new Resource<>(
+				record,
+				linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.APPROXIMATION),
+				linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
+			)
 		);
 	}
 	
 	@RequestMapping(path = Relations.RECORD, method = RequestMethod.GET)
 	public Resource<Record> findRecord(@RequestParam(Parameters.ID) String id) {
-		final Record record = Optional.ofNullable(records.findOne(id)).orElseThrow(NoSuchRecordException::new);
+		final Record record = Optional.ofNullable(records.findOne(id)).orElseThrow(NoSuchElementException::new);
+		
 		return new Resource<>(
 			record,
 			linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.APPROXIMATION),
