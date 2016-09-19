@@ -61,31 +61,31 @@ public final class FittingService {
 		}
 		
 		final ChiSquaredFCN fcn = new ChiSquaredFCN(approximation.getCurves(), approximation.getSourceData());
-		final FunctionMinimum minimum = new MnMigrad(fcn, mnUserParameters).minimize();
+		final FunctionMinimum min = new MnMigrad(fcn, mnUserParameters).minimize();
 		
-		log.info("FunctionMinimum: " + minimum.toString());
+		log.info("FunctionMinimum: " + min.toString());
 		
-		if (!minimum.isValid()) {
+		if (!min.isValid()) {
 			throw new FittingException("Minimization did not converge");
 		}
 		
-		approximation.setChiSquared(minimum.fval());
-		approximation.setChiSquaredReduced(minimum.fval() / (approximation.getSourceData().size() - minimum.userParameters().variableParameters()));
+		approximation.setChiSquared(min.fval());
+		approximation.setChiSquaredReduced(min.fval() / (approximation.getSourceData().size() - min.userParameters().variableParameters()));
 		
 		int paramIndex = 0;
 		for (final Curve curve : approximation.getCurves()) {
-			curve.getMaxCrossSection().setValue(minimum.userParameters().value(paramIndex));
-			curve.getMaxCrossSection().setError(minimum.userParameters().error(paramIndex));
+			curve.getMaxCrossSection().setValue(min.userParameters().value(paramIndex));
+			curve.getMaxCrossSection().setError(min.userParameters().error(paramIndex));
 			
 			paramIndex++;
 			
-			curve.getEnergyAtMaxCrossSection().setValue(minimum.userParameters().value(paramIndex));
-			curve.getEnergyAtMaxCrossSection().setError(minimum.userParameters().error(paramIndex));
+			curve.getEnergyAtMaxCrossSection().setValue(min.userParameters().value(paramIndex));
+			curve.getEnergyAtMaxCrossSection().setError(min.userParameters().error(paramIndex));
 			
 			paramIndex++;
 			
-			curve.getFullWidthAtHalfMaximum().setValue(minimum.userParameters().value(paramIndex));
-			curve.getFullWidthAtHalfMaximum().setError(minimum.userParameters().error(paramIndex));
+			curve.getFullWidthAtHalfMaximum().setValue(min.userParameters().value(paramIndex));
+			curve.getFullWidthAtHalfMaximum().setError(min.userParameters().error(paramIndex));
 			
 			paramIndex++;
 		}
