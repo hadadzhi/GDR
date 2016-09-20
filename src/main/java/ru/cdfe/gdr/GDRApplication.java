@@ -13,8 +13,8 @@ import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import ru.cdfe.gdr.domain.*;
-import ru.cdfe.gdr.services.FittingService;
 import ru.cdfe.gdr.repositories.RecordsRepository;
+import ru.cdfe.gdr.services.FittingService;
 
 import javax.validation.Validator;
 import java.util.*;
