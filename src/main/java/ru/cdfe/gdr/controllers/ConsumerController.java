@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cdfe.gdr.constants.Parameters;
 import ru.cdfe.gdr.constants.Profiles;
-import ru.cdfe.gdr.constants.Relations;
 import ru.cdfe.gdr.domain.Record;
 import ru.cdfe.gdr.exceptions.NoSuchRecordException;
 import ru.cdfe.gdr.repositories.RecordsRepository;
@@ -35,7 +34,7 @@ public class ConsumerController {
         this.records = records;
     }
     
-    @RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.GET)
+    @RequestMapping(path = "/records", method = RequestMethod.GET)
     public PagedResources<Resource<Record>> listRecords(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
         return assembler.toResource(
             records.findAll(pageable),
@@ -43,7 +42,7 @@ public class ConsumerController {
         );
     }
     
-    @RequestMapping(path = Relations.RECORD, method = RequestMethod.GET)
+    @RequestMapping(path = "/record", method = RequestMethod.GET)
     public Resource<Record> findRecord(@RequestParam(Parameters.ID) String id) {
         final Record record = Optional.ofNullable(records.findOne(id)).orElseThrow(NoSuchRecordException::new);
         return new Resource<>(record, linkTo(methodOn(ConsumerController.class).findRecord(record.getId())).withSelfRel());

@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 public final class Relations {
     public static final String RECORD = "record";
     public static final String RECORD_COLLECTION = "records";
-    public static final String APPROXIMATION = "approximation";
+    public static final String FITTING = "fitting";
 }

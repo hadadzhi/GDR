@@ -35,7 +35,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
-@RequestMapping("/")
 @Profile(Profiles.OPERATOR)
 public class OperatorController {
     private final ExforService exforService;
@@ -59,30 +58,30 @@ public class OperatorController {
         }
     }
     
-    @RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.GET)
+    @RequestMapping(path = "/records", method = RequestMethod.GET)
     public PagedResources<Resource<Record>> listRecords(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
         return assembler.toResource(
             records.findAll(pageable),
             record -> new Resource<>(
                 record,
-                linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.APPROXIMATION),
+                linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.FITTING),
                 linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
             )
         );
     }
     
-    @RequestMapping(path = Relations.RECORD, method = RequestMethod.GET)
+    @RequestMapping(path = "/record", method = RequestMethod.GET)
     public Resource<Record> findRecord(@RequestParam(Parameters.ID) String id) {
         final Record record = Optional.ofNullable(records.findOne(id)).orElseThrow(NoSuchElementException::new);
         
         return new Resource<>(
             record,
-            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.APPROXIMATION),
+            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.FITTING),
             linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
         );
     }
     
-    @RequestMapping(path = Relations.RECORD_COLLECTION, method = RequestMethod.POST)
+    @RequestMapping(path = "/record", method = RequestMethod.POST)
     public ResponseEntity<?> postRecord(@RequestBody Resource<Record> requestEntity) {
         Record newRecord = requestEntity.getContent();
         
@@ -93,7 +92,7 @@ public class OperatorController {
         return ResponseEntity.created(linkTo(methodOn(ConsumerController.class).findRecord(newRecord.getId())).toUri()).build();
     }
     
-    @RequestMapping(path = Relations.RECORD, method = RequestMethod.PUT)
+    @RequestMapping(path = "/record", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void putRecord(@RequestParam(Parameters.ID) String id, @RequestBody Resource<Record> request) {
         final Record newRecord = request.getContent();
@@ -111,7 +110,7 @@ public class OperatorController {
         records.save(newRecord);
     }
     
-    @RequestMapping(path = Relations.RECORD, method = RequestMethod.DELETE)
+    @RequestMapping(path = "/record", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteRecord(@RequestParam(Parameters.ID) String id) {
         if (!records.exists(id)) {
@@ -121,7 +120,7 @@ public class OperatorController {
         records.delete(id);
     }
     
-    @RequestMapping(path = Relations.RECORD, method = RequestMethod.POST)
+    @RequestMapping(path = "/record", method = RequestMethod.POST)
     public Resource<Record> createRecord(@RequestParam(Parameters.ID) String subEntNumber,
                                          @RequestParam(Parameters.ENERGY_COLUMN) int energyColumn,
                                          @RequestParam(Parameters.CROSS_SECTION_COLUMN) int crossSectionColumn,
@@ -137,12 +136,12 @@ public class OperatorController {
                 .firstMoment(parameters.getFirstMoment())
                 .energyCenter(parameters.getEnergyCenter())
                 .build(),
-            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.APPROXIMATION),
+            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.FITTING),
             linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
         );
     }
     
-    @RequestMapping(path = Relations.APPROXIMATION, method = RequestMethod.POST)
+    @RequestMapping(path = "/fitting", method = RequestMethod.POST)
     public Resource<Approximation> fitApproximation(@RequestBody Resource<Approximation> request) {
         final Approximation initialGuess = request.getContent();
         
