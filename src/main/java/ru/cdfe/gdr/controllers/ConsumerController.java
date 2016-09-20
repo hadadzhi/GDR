@@ -25,6 +25,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
+@RequestMapping("/")
 @Profile(Profiles.NOT_OPERATOR)
 public class ConsumerController {
     private final RecordsRepository records;

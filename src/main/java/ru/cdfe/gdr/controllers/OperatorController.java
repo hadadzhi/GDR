@@ -35,6 +35,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
+@RequestMapping("/")
 @Profile(Profiles.OPERATOR)
 public class OperatorController {
     private final ExforService exforService;
