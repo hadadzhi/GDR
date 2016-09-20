@@ -141,7 +141,7 @@ public class OperatorController {
         );
     }
     
-    @RequestMapping(path = "/fitting", method = RequestMethod.POST)
+    @RequestMapping(path = "/approximation", method = RequestMethod.POST)
     public Resource<Approximation> fitApproximation(@RequestBody Resource<Approximation> request) {
         final Approximation initialGuess = request.getContent();
         
