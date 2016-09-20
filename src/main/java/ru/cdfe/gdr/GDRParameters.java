@@ -31,13 +31,13 @@ public final class GDRParameters {
         return 0.5 * (sourceData.get(i < sourceData.size() - 1 ? i + 1 : i).getEnergy().getValue() - sourceData.get(i > 0 ? i - 1 : i).getEnergy().getValue());
     }
     
-    private Quantity computeSum(int size, IntToDoubleFunction valueAt, IntToDoubleFunction errorSquaredAt, String dimension) {
+    private Quantity computeSum(int size, IntToDoubleFunction valueAt, IntToDoubleFunction errorAt, String dimension) {
         double value = 0.;
         double errorSquared = 0.;
         
         for (int i = 0; i < size; i++) {
             value += valueAt.applyAsDouble(i);
-            errorSquared += errorSquaredAt.applyAsDouble(i);
+            errorSquared += Math.pow(errorAt.applyAsDouble(i), 2.);
         }
         
         return new Quantity(value, Math.sqrt(errorSquared), dimension);
@@ -47,7 +47,7 @@ public final class GDRParameters {
         return computeSum(
             sourceData.size(),
             i -> sourceData.get(i).getCrossSection().getValue() * energyDelta(i, sourceData),
-            i -> Math.pow(energyDelta(i, sourceData) * sourceData.get(i).getCrossSection().getError(), 2.),
+            i -> energyDelta(i, sourceData) * sourceData.get(i).getCrossSection().getError(),
             sourceData.get(0).getEnergy().getDimension() + "*" + sourceData.get(0).getCrossSection().getDimension()
         );
     }
@@ -56,7 +56,7 @@ public final class GDRParameters {
         return computeSum(
             sourceData.size(),
             i -> (sourceData.get(i).getCrossSection().getValue() / sourceData.get(i).getEnergy().getValue()) * energyDelta(i, sourceData),
-            i -> Math.pow((energyDelta(i, sourceData) / sourceData.get(i).getEnergy().getValue()) * sourceData.get(i).getCrossSection().getError(), 2.),
+            i -> (energyDelta(i, sourceData) / sourceData.get(i).getEnergy().getValue()) * sourceData.get(i).getCrossSection().getError(),
             sourceData.get(0).getCrossSection().getDimension()
         );
     }
@@ -65,7 +65,7 @@ public final class GDRParameters {
         final Quantity actualFirstMoment = computeSum(
             sourceData.size(),
             i -> sourceData.get(i).getCrossSection().getValue() * sourceData.get(i).getEnergy().getValue() * energyDelta(i, sourceData),
-            i -> Math.pow(energyDelta(i, sourceData) * sourceData.get(i).getEnergy().getValue() * sourceData.get(i).getCrossSection().getError(), 2.),
+            i -> energyDelta(i, sourceData) * sourceData.get(i).getEnergy().getValue() * sourceData.get(i).getCrossSection().getError(),
             null // This is irrelevant
         );
         
