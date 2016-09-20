@@ -12,9 +12,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = { FiniteDoubleValidator.class, FiniteFloatValidator.class })
 public @interface Finite {
-	String message() default "may not be infinite or NaN";
-	
-	Class<?>[] groups() default {};
-	
-	Class<? extends Payload>[] payload() default {};
+    String message() default "may not be infinite or NaN";
+    
+    Class<?>[] groups() default {};
+    
+    Class<? extends Payload>[] payload() default {};
 }

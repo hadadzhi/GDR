@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class FittingException extends RuntimeException {
-	public FittingException(String message) {
-		super(message);
-	}
+    public FittingException(String message) {
+        super(message);
+    }
 }

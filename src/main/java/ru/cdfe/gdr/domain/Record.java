@@ -26,64 +26,64 @@ import static ru.cdfe.gdr.constants.Relations.RECORD_COLLECTION;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Relation(value = RECORD, collectionRelation = RECORD_COLLECTION)
 public class Record {
-	/**
-	 * Exfor subent number or internal generated id
-	 */
-	@Id
-	@JsonIgnore
-	private String id;
-	
-	/**
-	 * Enables optimistic concurrency control
-	 */
-	@Version
-	@JsonIgnore
-	private BigInteger version;
-	
-	@Valid
-	private List<DataPoint> sourceData;
-	
-	public List<DataPoint> getSourceData() {
-		if (sourceData == null) {
-			sourceData = new ArrayList<>();
-		}
-
-		return sourceData;
-	}
-	
-	@NotEmpty
-	@Valid
-	private List<Approximation> approximations;
-	
-	public List<Approximation> getApproximations() {
-		if (approximations == null) {
-			approximations = new ArrayList<>();
-		}
-
-		return approximations;
-	}
-	
-	@NotEmpty
-	@Valid
-	private List<Reaction> reactions;
-	
-	public List<Reaction> getReactions() {
-		if (reactions == null) {
-			reactions = new ArrayList<>();
-		}
-
-		return reactions;
-	}
-	
-	@NotNull
-	@Valid
-	private Quantity integratedCrossSection;
-	
-	@NotNull
-	@Valid
-	private Quantity firstMoment;
-	
-	@NotNull
-	@Valid
-	private Quantity energyCenter;
+    /**
+     * Exfor subent number or internal generated id
+     */
+    @Id
+    @JsonIgnore
+    private String id;
+    
+    /**
+     * Enables optimistic concurrency control
+     */
+    @Version
+    @JsonIgnore
+    private BigInteger version;
+    
+    @Valid
+    private List<DataPoint> sourceData;
+    
+    public List<DataPoint> getSourceData() {
+        if (sourceData == null) {
+            sourceData = new ArrayList<>();
+        }
+        
+        return sourceData;
+    }
+    
+    @NotEmpty
+    @Valid
+    private List<Approximation> approximations;
+    
+    public List<Approximation> getApproximations() {
+        if (approximations == null) {
+            approximations = new ArrayList<>();
+        }
+        
+        return approximations;
+    }
+    
+    @NotEmpty
+    @Valid
+    private List<Reaction> reactions;
+    
+    public List<Reaction> getReactions() {
+        if (reactions == null) {
+            reactions = new ArrayList<>();
+        }
+        
+        return reactions;
+    }
+    
+    @NotNull
+    @Valid
+    private Quantity integratedCrossSection;
+    
+    @NotNull
+    @Valid
+    private Quantity firstMoment;
+    
+    @NotNull
+    @Valid
+    private Quantity energyCenter;
 }

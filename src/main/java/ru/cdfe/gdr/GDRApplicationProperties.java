@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("gdr")
 public class GDRApplicationProperties {
-	@NotBlank
-	private String curieName;
-	
-	@NotBlank
-	private String curieUrlTemplate;
+    @NotBlank
+    private String curieName;
+    
+    @NotBlank
+    private String curieUrlTemplate;
 }
