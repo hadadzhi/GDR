@@ -81,7 +81,7 @@ public class OperatorController {
         );
     }
     
-    @RequestMapping(path = "/record", method = RequestMethod.POST)
+    @RequestMapping(path = "/records", method = RequestMethod.POST)
     public ResponseEntity<?> postRecord(@RequestBody Resource<Record> requestEntity) {
         Record newRecord = requestEntity.getContent();
         
