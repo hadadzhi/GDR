@@ -14,8 +14,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.cdfe.gdr.constants.Relations.RECORD;
-import static ru.cdfe.gdr.constants.Relations.RECORD_COLLECTION;
+import static ru.cdfe.gdr.constants.RelationTypes.RECORD;
+import static ru.cdfe.gdr.constants.RelationTypes.RECORD_COLLECTION;
 
 @Document
 @Getter

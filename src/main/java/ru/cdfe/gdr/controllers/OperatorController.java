@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.cdfe.gdr.GDRParameters;
 import ru.cdfe.gdr.constants.Parameters;
 import ru.cdfe.gdr.constants.Profiles;
-import ru.cdfe.gdr.constants.Relations;
+import ru.cdfe.gdr.constants.RelationTypes;
 import ru.cdfe.gdr.domain.Approximation;
 import ru.cdfe.gdr.domain.DataPoint;
 import ru.cdfe.gdr.domain.Record;
@@ -64,7 +64,7 @@ public class OperatorController {
             records.findAll(pageable),
             record -> new Resource<>(
                 record,
-                linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.FITTING),
+                linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION),
                 linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
             )
         );
@@ -76,7 +76,7 @@ public class OperatorController {
         
         return new Resource<>(
             record,
-            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.FITTING),
+            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION),
             linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
         );
     }
@@ -136,7 +136,7 @@ public class OperatorController {
                 .firstMoment(parameters.getFirstMoment())
                 .energyCenter(parameters.getEnergyCenter())
                 .build(),
-            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(Relations.FITTING),
+            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION),
             linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
         );
     }
