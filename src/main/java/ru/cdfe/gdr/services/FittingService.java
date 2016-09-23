@@ -15,7 +15,6 @@ import ru.cdfe.gdr.domain.DataPoint;
 import ru.cdfe.gdr.exceptions.FittingException;
 
 import java.util.List;
-import java.util.UUID;
 
 import static ru.cdfe.gdr.constants.Profiles.OPERATOR;
 
@@ -55,10 +54,11 @@ public final class FittingService {
         // The order in which the parameters are added here is very important
         // as they will be passed to the chi squared function as an array
         // Use this loop for reference
+        int parameterIndex = 0;
         for (final Curve curve : approximation.getCurves()) {
-            mnUserParameters.add(UUID.randomUUID().toString(), curve.getMaxCrossSection().getValue(), 1.);
-            mnUserParameters.add(UUID.randomUUID().toString(), curve.getEnergyAtMaxCrossSection().getValue(), 1.);
-            mnUserParameters.add(UUID.randomUUID().toString(), curve.getFullWidthAtHalfMaximum().getValue(), 1.);
+            mnUserParameters.add(Integer.toString(parameterIndex++), curve.getMaxCrossSection().getValue(), 1.);
+            mnUserParameters.add(Integer.toString(parameterIndex++), curve.getEnergyAtMaxCrossSection().getValue(), 1.);
+            mnUserParameters.add(Integer.toString(parameterIndex++), curve.getFullWidthAtHalfMaximum().getValue(), 1.);
         }
         
         final ChiSquaredFCN fcn = new ChiSquaredFCN(approximation.getCurves(), approximation.getSourceData());
@@ -73,22 +73,22 @@ public final class FittingService {
         approximation.setChiSquared(min.fval());
         approximation.setChiSquaredReduced(min.fval() / (approximation.getSourceData().size() - min.userParameters().variableParameters()));
         
-        int paramIndex = 0;
+        parameterIndex = 0;
         for (final Curve curve : approximation.getCurves()) {
-            curve.getMaxCrossSection().setValue(min.userParameters().value(paramIndex));
-            curve.getMaxCrossSection().setError(min.userParameters().error(paramIndex));
+            curve.getMaxCrossSection().setValue(min.userParameters().value(parameterIndex));
+            curve.getMaxCrossSection().setError(min.userParameters().error(parameterIndex));
             
-            paramIndex++;
+            parameterIndex++;
             
-            curve.getEnergyAtMaxCrossSection().setValue(min.userParameters().value(paramIndex));
-            curve.getEnergyAtMaxCrossSection().setError(min.userParameters().error(paramIndex));
+            curve.getEnergyAtMaxCrossSection().setValue(min.userParameters().value(parameterIndex));
+            curve.getEnergyAtMaxCrossSection().setError(min.userParameters().error(parameterIndex));
             
-            paramIndex++;
+            parameterIndex++;
             
-            curve.getFullWidthAtHalfMaximum().setValue(min.userParameters().value(paramIndex));
-            curve.getFullWidthAtHalfMaximum().setError(min.userParameters().error(paramIndex));
+            curve.getFullWidthAtHalfMaximum().setValue(min.userParameters().value(parameterIndex));
+            curve.getFullWidthAtHalfMaximum().setError(min.userParameters().error(parameterIndex));
             
-            paramIndex++;
+            parameterIndex++;
         }
     }
     
