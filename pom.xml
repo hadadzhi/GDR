@@ -15,7 +15,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.4.1.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     
     <properties>
@@ -72,6 +71,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
         </dependency>
         
         <dependency>
@@ -96,7 +96,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludeDevtools>true</excludeDevtools>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 </project>
+
