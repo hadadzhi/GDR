@@ -12,12 +12,22 @@ import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import ru.cdfe.gdr.domain.*;
+import ru.cdfe.gdr.domain.Approximation;
+import ru.cdfe.gdr.domain.Curve;
+import ru.cdfe.gdr.domain.DataPoint;
+import ru.cdfe.gdr.domain.Nucleus;
+import ru.cdfe.gdr.domain.Quantity;
+import ru.cdfe.gdr.domain.Reaction;
+import ru.cdfe.gdr.domain.Record;
 import ru.cdfe.gdr.repositories.RecordsRepository;
 import ru.cdfe.gdr.services.FittingService;
 
 import javax.validation.Validator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SpringBootApplication

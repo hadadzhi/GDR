@@ -2,7 +2,11 @@ package ru.cdfe.gdr.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The annotated element's value must not be infinite or NaN. {@code null} elements are considered valid. Accepts {@link Float} and {@link Double}.
