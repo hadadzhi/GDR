@@ -141,8 +141,7 @@ public class OperatorController {
                 .firstMoment(parameters.getFirstMoment())
                 .energyCenter(parameters.getEnergyCenter())
                 .build(),
-            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION),
-            linkTo(methodOn(OperatorController.class).createRecord(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn)).withSelfRel()
+            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION)
         );
     }
     
