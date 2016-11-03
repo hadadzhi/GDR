@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class NoExforDataException extends RuntimeException {
-    public NoExforDataException(String subEntNumber) {
-        super("Subent: " + subEntNumber);
-    }
+  public NoExforDataException(String subEntNumber) {
+    super("Subent: " + subEntNumber);
+  }
 }

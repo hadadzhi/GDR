@@ -15,8 +15,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Reaction {
-    private Nucleus target;
-    private Nucleus product;
-    private String incident;
-    private String outgoing;
+  private Nucleus target;
+  private Nucleus product;
+  private String incident;
+  private String outgoing;
 }
