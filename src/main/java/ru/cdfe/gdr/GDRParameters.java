@@ -32,12 +32,12 @@ public final class GDRParameters {
   }
   
   private Quantity computeSum(int size, IntToDoubleFunction valueAt, IntToDoubleFunction errorAt, String dimension) {
-    double value = 0.;
-    double errorSquared = 0.;
+    double value = 0;
+    double errorSquared = 0;
     
     for (int i = 0; i < size; i++) {
       value += valueAt.applyAsDouble(i);
-      errorSquared += Math.pow(errorAt.applyAsDouble(i), 2.);
+      errorSquared += Math.pow(errorAt.applyAsDouble(i), 2);
     }
     
     return new Quantity(value, Math.sqrt(errorSquared), dimension);
@@ -74,6 +74,6 @@ public final class GDRParameters {
     double da = actualFirstMoment.getError();
     double db = integratedCrossSection.getError();
     
-    return new Quantity(a / b, Math.sqrt(Math.pow(da / b, 2.) + Math.pow(a * db / (b * b), 2.)), sourceData.get(0).getEnergy().getDimension());
+    return new Quantity(a / b, Math.sqrt(Math.pow(da / b, 2) + Math.pow(a * db / (b * b), 2)), sourceData.get(0).getEnergy().getDimension());
   }
 }

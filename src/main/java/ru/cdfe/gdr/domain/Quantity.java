@@ -25,11 +25,11 @@ public class Quantity {
   private String dimension;
   
   public Quantity(double value) {
-    this(value, 0., NO_DIM);
+    this(value, 0, NO_DIM);
   }
   
   public Quantity(double value, String dimension) {
-    this(value, 0., dimension);
+    this(value, 0, dimension);
   }
   
   public Quantity(double value, double error) {

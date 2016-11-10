@@ -42,9 +42,9 @@ public final class FittingService {
     // Use this loop for reference
     int parameterIndex = 0;
     for (final Curve curve : approximation.getCurves()) {
-      mnUserParameters.add(Integer.toString(parameterIndex++), curve.getMaxCrossSection().getValue(), 1.);
-      mnUserParameters.add(Integer.toString(parameterIndex++), curve.getEnergyAtMaxCrossSection().getValue(), 1.);
-      mnUserParameters.add(Integer.toString(parameterIndex++), curve.getFullWidthAtHalfMaximum().getValue(), 1.);
+      mnUserParameters.add(Integer.toString(parameterIndex++), curve.getMaxCrossSection().getValue(), 1);
+      mnUserParameters.add(Integer.toString(parameterIndex++), curve.getEnergyAtMaxCrossSection().getValue(), 1);
+      mnUserParameters.add(Integer.toString(parameterIndex++), curve.getFullWidthAtHalfMaximum().getValue(), 1);
     }
     
     final ChiSquaredFCN fcn = new ChiSquaredFCN(approximation.getCurves(), approximation.getSourceData());
@@ -84,11 +84,11 @@ public final class FittingService {
     public static final String LORENTZIAN = "lorentzian";
     
     private static double gaussian(double x, double scale, double loc, double width) {
-      return scale * Math.exp(-0.5 * Math.pow((x - loc) / width, 2.));
+      return scale * Math.exp(-0.5 * Math.pow((x - loc) / width, 2));
     }
     
     private static double lorentzian(double x, double scale, double loc, double width) {
-      return scale / (Math.PI * (width + (Math.pow(x - loc, 2.) / width)));
+      return scale / (Math.PI * (width + (Math.pow(x - loc, 2) / width)));
     }
   }
   
@@ -102,7 +102,7 @@ public final class FittingService {
     }
     
     private double model(double x, double[] paramArray) {
-      double sum = 0.;
+      double sum = 0;
       
       int paramIndex = 0;
       for (final Curve curve : curves) {
@@ -112,11 +112,11 @@ public final class FittingService {
         
         switch (curve.getType()) {
           case Curves.GAUSSIAN: {
-            sum += Curves.gaussian(x, maxCrossSection, energyAtMaxCrossSection, fullWidth / (2. * Math.sqrt(2. * Math.log(2.))));
+            sum += Curves.gaussian(x, maxCrossSection, energyAtMaxCrossSection, fullWidth / (2 * Math.sqrt(2 * Math.log(2))));
             break;
           }
           case Curves.LORENTZIAN: {
-            sum += Curves.lorentzian(x, (Math.PI / 2) * fullWidth * maxCrossSection, energyAtMaxCrossSection, fullWidth / 2.);
+            sum += Curves.lorentzian(x, (Math.PI / 2) * fullWidth * maxCrossSection, energyAtMaxCrossSection, fullWidth / 2);
             break;
           }
           default: {
@@ -130,14 +130,14 @@ public final class FittingService {
     
     @Override
     public double valueOf(double[] paramArray) {
-      double chiSquared = 0.;
+      double chiSquared = 0;
       
       for (final DataPoint p : sourceData) {
         final double model = model(p.getEnergy().getValue(), paramArray);
         final double data = p.getCrossSection().getValue();
         final double dataError = p.getCrossSection().getError();
         
-        chiSquared += Math.pow((data - model) / dataError, 2.);
+        chiSquared += Math.pow((data - model) / dataError, 2);
       }
       
       return chiSquared;
