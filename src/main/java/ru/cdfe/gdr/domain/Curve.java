@@ -19,18 +19,18 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Curve {
-  @NotBlank
-  private String type;
-  
-  @NotNull
-  @Valid
-  private Quantity maxCrossSection;
-  
-  @NotNull
-  @Valid
-  private Quantity energyAtMaxCrossSection;
-  
-  @NotNull
-  @Valid
-  private Quantity fullWidthAtHalfMaximum;
+    @NotBlank
+    private String type;
+    
+    @NotNull
+    @Valid
+    private Quantity maxCrossSection;
+    
+    @NotNull
+    @Valid
+    private Quantity energyAtMaxCrossSection;
+    
+    @NotNull
+    @Valid
+    private Quantity fullWidthAtHalfMaximum;
 }

@@ -12,19 +12,19 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class HomeController {
-  @RequestMapping(path = "/", method = RequestMethod.GET)
-  public ResourceSupport home() {
-    final ResourceSupport home = new ResourceSupport();
-    
-    home.add(linkTo(methodOn(HomeController.class).home()).withSelfRel());
-    
-    home.add(linkTo(methodOn(ConsumerController.class).listRecords(null, null)).withRel(RelationTypes.RECORD_COLLECTION));
-    
-    home.add(new Link(
-      linkTo(methodOn(ConsumerController.class).findRecord("")).toUriComponentsBuilder().replaceQuery(null).toUriString(),
-      RelationTypes.RECORD
-    ));
-    
-    return home;
-  }
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public ResourceSupport home() {
+        final ResourceSupport home = new ResourceSupport();
+
+        home.add(linkTo(methodOn(HomeController.class).home()).withSelfRel());
+
+        home.add(linkTo(methodOn(ConsumerController.class).listRecords(null, null)).withRel(RelationTypes.RECORD_COLLECTION));
+
+        home.add(new Link(
+            linkTo(methodOn(ConsumerController.class).findRecord("")).toUriComponentsBuilder().replaceQuery(null).toUriString(),
+            RelationTypes.RECORD
+        ));
+
+        return home;
+    }
 }

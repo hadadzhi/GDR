@@ -22,34 +22,34 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Approximation {
-  @NotBlank
-  private String description;
-  
-  @Finite
-  private double chiSquared;
-  
-  @Finite
-  private double chiSquaredReduced;
-  
-  @Valid
-  private List<DataPoint> sourceData;
-  @NotEmpty
-  @Valid
-  private List<Curve> curves;
-  
-  public List<DataPoint> getSourceData() {
-    if (sourceData == null) {
-      sourceData = new ArrayList<>();
+    @NotBlank
+    private String description;
+    
+    @Finite
+    private double chiSquared;
+    
+    @Finite
+    private double chiSquaredReduced;
+    
+    @Valid
+    private List<DataPoint> sourceData;
+    @NotEmpty
+    @Valid
+    private List<Curve> curves;
+    
+    public List<DataPoint> getSourceData() {
+        if (sourceData == null) {
+            sourceData = new ArrayList<>();
+        }
+        
+        return sourceData;
     }
     
-    return sourceData;
-  }
-  
-  public List<Curve> getCurves() {
-    if (curves == null) {
-      curves = new ArrayList<>();
+    public List<Curve> getCurves() {
+        if (curves == null) {
+            curves = new ArrayList<>();
+        }
+        
+        return curves;
     }
-    
-    return curves;
-  }
 }

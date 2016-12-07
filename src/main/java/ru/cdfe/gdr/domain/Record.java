@@ -32,59 +32,59 @@ import static ru.cdfe.gdr.constants.RelationTypes.RECORD_COLLECTION;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Relation(value = RECORD, collectionRelation = RECORD_COLLECTION)
 public class Record {
-  /**
-   * Exfor subent number or internal generated id
-   */
-  @Id
-  @JsonIgnore
-  private String id;
-  
-  /**
-   * Enables optimistic concurrency control
-   */
-  @Version
-  @JsonIgnore
-  private BigInteger version;
-  
-  @Valid
-  private List<DataPoint> sourceData;
-  @NotEmpty
-  @Valid
-  private List<Approximation> approximations;
-  @NotEmpty
-  @Valid
-  private List<Reaction> reactions;
-  @NotNull
-  @Valid
-  private Quantity integratedCrossSection;
-  @NotNull
-  @Valid
-  private Quantity firstMoment;
-  @NotNull
-  @Valid
-  private Quantity energyCenter;
-  
-  public List<DataPoint> getSourceData() {
-    if (sourceData == null) {
-      sourceData = new ArrayList<>();
+    /**
+     * Exfor subent number or internal generated id
+     */
+    @Id
+    @JsonIgnore
+    private String id;
+    
+    /**
+     * Enables optimistic concurrency control
+     */
+    @Version
+    @JsonIgnore
+    private BigInteger version;
+    
+    @Valid
+    private List<DataPoint> sourceData;
+    @NotEmpty
+    @Valid
+    private List<Approximation> approximations;
+    @NotEmpty
+    @Valid
+    private List<Reaction> reactions;
+    @NotNull
+    @Valid
+    private Quantity integratedCrossSection;
+    @NotNull
+    @Valid
+    private Quantity firstMoment;
+    @NotNull
+    @Valid
+    private Quantity energyCenter;
+    
+    public List<DataPoint> getSourceData() {
+        if (sourceData == null) {
+            sourceData = new ArrayList<>();
+        }
+        
+        return sourceData;
     }
     
-    return sourceData;
-  }
-  
-  public List<Approximation> getApproximations() {
-    if (approximations == null) {
-      approximations = new ArrayList<>();
+    public List<Approximation> getApproximations() {
+        if (approximations == null) {
+            approximations = new ArrayList<>();
+        }
+        
+        return approximations;
     }
     
-    return approximations;
-  }
-  
-  public List<Reaction> getReactions() {
-    if (reactions == null) {
-      reactions = new ArrayList<>();
+    public List<Reaction> getReactions() {
+        if (reactions == null) {
+            reactions = new ArrayList<>();
+        }
+        
+        return reactions;
     }
-    
-    return reactions;
-  }
 }

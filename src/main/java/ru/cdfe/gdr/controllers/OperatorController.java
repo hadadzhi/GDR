@@ -42,117 +42,117 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RestController
 @Profile(Profiles.OPERATOR)
 public class OperatorController {
-  private final ExforService exforService;
-  private final FittingService fittingService;
-  private final RecordsRepository records;
-  private final Validator validator;
-  
-  @Autowired
-  public OperatorController(ExforService exforService, FittingService fittingService, RecordsRepository records, Validator validator) {
-    this.exforService = exforService;
-    this.fittingService = fittingService;
-    this.records = records;
-    this.validator = validator;
-  }
-  
-  private <T> void validate(T object) {
-    final Set<ConstraintViolation<T>> violations = validator.validate(object);
+    private final ExforService exforService;
+    private final FittingService fittingService;
+    private final RecordsRepository records;
+    private final Validator validator;
     
-    if (!violations.isEmpty()) {
-      throw new ValidationException(violations);
-    }
-  }
-  
-  @RequestMapping(path = "/records", method = RequestMethod.GET)
-  public PagedResources<Resource<Record>> listRecords(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
-    return assembler.toResource(
-      records.findAll(pageable),
-      record -> new Resource<>(
-        record,
-        linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION),
-        linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
-      )
-    );
-  }
-  
-  @RequestMapping(path = "/record", method = RequestMethod.GET)
-  public Resource<Record> findRecord(@RequestParam(Parameters.ID) String id) {
-    final Record record = Optional.ofNullable(records.findOne(id)).orElseThrow(NoSuchElementException::new);
-    
-    return new Resource<>(
-      record,
-      linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION),
-      linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
-    );
-  }
-  
-  @RequestMapping(path = "/records", method = RequestMethod.POST)
-  public ResponseEntity<?> postRecord(@RequestBody Resource<Record> requestEntity) {
-    Record newRecord = requestEntity.getContent();
-    
-    validate(newRecord);
-    
-    newRecord = records.save(newRecord);
-    
-    return ResponseEntity.created(linkTo(methodOn(ConsumerController.class).findRecord(newRecord.getId())).toUri()).build();
-  }
-  
-  @RequestMapping(path = "/record", method = RequestMethod.PUT)
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void putRecord(@RequestParam(Parameters.ID) String id, @RequestBody Resource<Record> request) {
-    final Record newRecord = request.getContent();
-    
-    validate(newRecord);
-    
-    newRecord.setId(id);
-    
-    final Record oldRecord = records.findOne(id);
-    
-    if (oldRecord != null) {
-      newRecord.setVersion(oldRecord.getVersion());
+    @Autowired
+    public OperatorController(ExforService exforService, FittingService fittingService, RecordsRepository records, Validator validator) {
+        this.exforService = exforService;
+        this.fittingService = fittingService;
+        this.records = records;
+        this.validator = validator;
     }
     
-    records.save(newRecord);
-  }
-  
-  @RequestMapping(path = "/record", method = RequestMethod.DELETE)
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteRecord(@RequestParam(Parameters.ID) String id) {
-    if (!records.exists(id)) {
-      throw new NoSuchRecordException();
+    private <T> void validate(T object) {
+        final Set<ConstraintViolation<T>> violations = validator.validate(object);
+        
+        if (!violations.isEmpty()) {
+            throw new ValidationException(violations);
+        }
     }
     
-    records.delete(id);
-  }
-  
-  @RequestMapping(path = "/record", method = RequestMethod.POST)
-  public Resource<Record> createRecord(@RequestParam(Parameters.ID) String subEntNumber,
-                                       @RequestParam(Parameters.ENERGY_COLUMN) int energyColumn,
-                                       @RequestParam(Parameters.CROSS_SECTION_COLUMN) int crossSectionColumn,
-                                       @RequestParam(Parameters.CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
-    final List<DataPoint> sourceData = exforService.getData(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn);
-    final GDRParameters parameters = new GDRParameters(sourceData);
+    @RequestMapping(path = "/records", method = RequestMethod.GET)
+    public PagedResources<Resource<Record>> listRecords(Pageable pageable, PagedResourcesAssembler<Record> assembler) {
+        return assembler.toResource(
+            records.findAll(pageable),
+            record -> new Resource<>(
+                record,
+                linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION),
+                linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
+            )
+        );
+    }
     
-    return new Resource<>(
-      Record.builder()
-        .reactions(exforService.getReactions(subEntNumber))
-        .sourceData(sourceData)
-        .integratedCrossSection(parameters.getIntegratedCrossSection())
-        .firstMoment(parameters.getFirstMoment())
-        .energyCenter(parameters.getEnergyCenter())
-        .build(),
-      linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION)
-    );
-  }
-  
-  @RequestMapping(path = "/approximation", method = RequestMethod.POST)
-  public Resource<Approximation> fitApproximation(@RequestBody Resource<Approximation> request) {
-    final Approximation initialGuess = request.getContent();
+    @RequestMapping(path = "/record", method = RequestMethod.GET)
+    public Resource<Record> findRecord(@RequestParam(Parameters.ID) String id) {
+        final Record record = Optional.ofNullable(records.findOne(id)).orElseThrow(NoSuchElementException::new);
+        
+        return new Resource<>(
+            record,
+            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION),
+            linkTo(methodOn(OperatorController.class).findRecord(record.getId())).withSelfRel()
+        );
+    }
     
-    validate(initialGuess);
+    @RequestMapping(path = "/records", method = RequestMethod.POST)
+    public ResponseEntity<?> postRecord(@RequestBody Resource<Record> requestEntity) {
+        Record newRecord = requestEntity.getContent();
+        
+        validate(newRecord);
+        
+        newRecord = records.save(newRecord);
+        
+        return ResponseEntity.created(linkTo(methodOn(ConsumerController.class).findRecord(newRecord.getId())).toUri()).build();
+    }
     
-    fittingService.fit(initialGuess);
+    @RequestMapping(path = "/record", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void putRecord(@RequestParam(Parameters.ID) String id, @RequestBody Resource<Record> request) {
+        final Record newRecord = request.getContent();
+        
+        validate(newRecord);
+        
+        newRecord.setId(id);
+        
+        final Record oldRecord = records.findOne(id);
+        
+        if (oldRecord != null) {
+            newRecord.setVersion(oldRecord.getVersion());
+        }
+        
+        records.save(newRecord);
+    }
     
-    return new Resource<>(initialGuess);
-  }
+    @RequestMapping(path = "/record", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteRecord(@RequestParam(Parameters.ID) String id) {
+        if (!records.exists(id)) {
+            throw new NoSuchRecordException();
+        }
+        
+        records.delete(id);
+    }
+    
+    @RequestMapping(path = "/record", method = RequestMethod.POST)
+    public Resource<Record> createRecord(@RequestParam(Parameters.ID) String subEntNumber,
+                                         @RequestParam(Parameters.ENERGY_COLUMN) int energyColumn,
+                                         @RequestParam(Parameters.CROSS_SECTION_COLUMN) int crossSectionColumn,
+                                         @RequestParam(Parameters.CROSS_SECTION_ERROR_COLUMN) int crossSectionErrorColumn) {
+        final List<DataPoint> sourceData = exforService.getData(subEntNumber, energyColumn, crossSectionColumn, crossSectionErrorColumn);
+        final GDRParameters parameters = new GDRParameters(sourceData);
+        
+        return new Resource<>(
+            Record.builder()
+                .reactions(exforService.getReactions(subEntNumber))
+                .sourceData(sourceData)
+                .integratedCrossSection(parameters.getIntegratedCrossSection())
+                .firstMoment(parameters.getFirstMoment())
+                .energyCenter(parameters.getEnergyCenter())
+                .build(),
+            linkTo(methodOn(OperatorController.class).fitApproximation(null)).withRel(RelationTypes.APPROXIMATION)
+        );
+    }
+    
+    @RequestMapping(path = "/approximation", method = RequestMethod.POST)
+    public Resource<Approximation> fitApproximation(@RequestBody Resource<Approximation> request) {
+        final Approximation initialGuess = request.getContent();
+        
+        validate(initialGuess);
+        
+        fittingService.fit(initialGuess);
+        
+        return new Resource<>(initialGuess);
+    }
 }

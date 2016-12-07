@@ -11,11 +11,11 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Nucleus {
-  private int charge;
-  private int mass;
-  
-  public Nucleus(int charge, int mass) {
-    this.charge = charge;
-    this.mass = mass;
-  }
+    private int charge;
+    private int mass;
+    
+    public Nucleus(int charge, int mass) {
+        this.charge = charge;
+        this.mass = mass;
+    }
 }
