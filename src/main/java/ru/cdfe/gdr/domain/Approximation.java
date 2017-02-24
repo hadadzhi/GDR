@@ -33,6 +33,7 @@ public class Approximation {
     
     @Valid
     private List<DataPoint> sourceData;
+
     @NotEmpty
     @Valid
     private List<Curve> curves;

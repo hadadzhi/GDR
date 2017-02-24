@@ -48,18 +48,23 @@ public class Record {
     
     @Valid
     private List<DataPoint> sourceData;
+
     @NotEmpty
     @Valid
     private List<Approximation> approximations;
+
     @NotEmpty
     @Valid
     private List<Reaction> reactions;
+
     @NotNull
     @Valid
     private Quantity integratedCrossSection;
+
     @NotNull
     @Valid
     private Quantity firstMoment;
+
     @NotNull
     @Valid
     private Quantity energyCenter;
