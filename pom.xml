@@ -25,9 +25,8 @@
     
     <repositories>
         <repository>
-            <name>FreeHEP</name>
-            <id>freehep-maven</id>
-            <url>http://java.freehep.org/maven2</url>
+            <id>Local repository</id>
+            <url>file://${basedir}/lib</url>
         </repository>
     </repositories>
     
