@@ -23,6 +23,7 @@
         <java.version>1.8</java.version>
     </properties>
     
+    <!-- Before building, install external dependencies to the local repo located in /lib -->
     <repositories>
         <repository>
             <id>Local repository</id>
